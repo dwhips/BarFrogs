@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>&lt;title&gt; element</title>
+  </head>
+  <body>
+    
+    <header>
+        <h1 id="top">Drinking Card Test</h1>
+    </header>
+
+    <main>
+        <section>
+            <!-- Header info rules details -->
+            <header>
+                <h3>Rules</h3>
+            </header>
+
+            <ol>
+                <li> with 5-10 ish cards per person (shuffle the black out card in?)</li>
+	            <li>At the start of your turn draw a card or steal from any opponent</li>
+		        <li>If the deck is empty, you must steal instead of drawing.</li>
+	            <li>*Ideally you can play as many cards from your hand, but how do you stop a player from playing out their hand.</li>
+                <ul><li>Make some cards responsive (counter), possibly some cards require 2 to activate.</li>
+                </ul>
+		        <li>Game cant end until the draw pile is empty?</li>
+	            <li>Play until you have no cards left, or until you are the last player remaining.</li>
+            </ol>
+        </section>
+
+        <section>
+            <!-- Game -->
+             <div>
+                <button id="GenCardButton" type="button">Generate Random Card</button> 
+                <p id="CardText">Card Text</p>
+            </div>
+
+            <ul id="PlayerList">
+                <li><button>daniel</button> </li>
+                <li><button>Alex</button> </li>
+            </ul>
+        </section>
+
+        <script src="CardClass.js"></script>
+        <script src="game.js"></script>
+    </main>
+
+</body>
+</html>
