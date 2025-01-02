@@ -41,7 +41,7 @@ const CardLocation = {
         this.playerOwner = lngPlayer;
         this.location = CardLocation.Hand;
     }
-
+    
     sendToDeck(){
         this.playerOwner = -1;
         this.location = CardLocation.Deck;
@@ -76,7 +76,7 @@ const CardLocation = {
 class PlayerData{
     name;
     playersHand = [];
-    playersTableHand = []; //TODO pending what is the easiest way to manage this
+    playersTableHand = []; //TODO pending what is the easiest way to manage this// This would be the cards played by a plyer (if they need to be on the table)
 
     constructor(strName)
     {
@@ -85,6 +85,11 @@ class PlayerData{
 
     getName(){
         return this.name;
+    }
+
+    getPlayersHand()
+    {
+        return this.playersHand;
     }
 
     addCardToHand(objCard)
@@ -102,7 +107,7 @@ class PlayerData{
 }
 
  class CardManager{
-    fullCardList = [];
+    deckCardList = [];
     playerList = [];
     playerStartHandCount;
     iCurrentPlayer;
@@ -123,12 +128,12 @@ class PlayerData{
         for (i = 0; i < count; i++)
         {
             // console.log("I am adding a card" + strName + ": #" + count)
-            this.fullCardList.push(new CardData(strName, strDetails));
+            this.deckCardList.push(new CardData(strName, strDetails));
         }
     }
 
     getCardFromList(iCard){
-        return this.fullCardList[iCard];
+        return this.deckCardList[iCard];
     }
 
     getCurrentPlayer()
@@ -138,7 +143,7 @@ class PlayerData{
 
     shuffleDeck(){
         //TODO only shuffle cards in the deck
-        shuffleArray(this.fullCardList);
+        shuffleArray(this.deckCardList);
 
         //TODO for debugging, make this a button.
     }
@@ -149,12 +154,12 @@ class PlayerData{
             iPlayer = this.getCurrentPlayer();
         }
 
-        if (this.fullCardList.length == 0)
+        if (this.deckCardList.length == 0)
         {
             throw new error("The deck is empty, failed to draw a card");
         }
 
-        var testCard = this.fullCardList.pop();
+        var testCard = this.deckCardList.pop();
         this.playerList[iPlayer].addCardToHand(testCard);
         console.log("/////////Drawing card "+ testCard.name +" for player : " + iPlayer);
 
@@ -201,7 +206,7 @@ class PlayerData{
         var totalCardsToDeal = this.playerList.length * this.playerStartHandCount;
         console.log("Total cards to deal: " + totalCardsToDeal);
 
-        if (totalCardsToDeal > this.fullCardList.length) throw new error("Trying to draw " + totalCardsToDeal + " from " + this.fullCardList.length + " cards.");
+        if (totalCardsToDeal > this.deckCardList.length) throw new error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
 
         var iCard = 0;
         for(var iPlayer = 0; iPlayer < this.playerList.length; iPlayer++)
