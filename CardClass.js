@@ -1,7 +1,6 @@
 // Builds and manages cards loaded on page
 
 //TODO delete all of the card location stuff. Each player will be getting a list for their hand, no longer a master list
-//TODO generate list for each player showing their cards(show on html)
 
 
 const CardLocation = {
@@ -142,7 +141,6 @@ class PlayerData{
     }
 
     shuffleDeck(){
-        //TODO only shuffle cards in the deck
         shuffleArray(this.deckCardList);
 
         //TODO for debugging, make this a button.
@@ -218,25 +216,8 @@ class PlayerData{
             this.playerList[iPlayer].printPlayerCardList();
         }
     }
-
-
  }
   
-//   const square = new Rectangle(10, 10);
-
-//   testing card class
-// const cardManagerObj = new CardManager(5);
-// cardManagerObj.addCard("test", "test data", 0);
-// cardManagerObj.addCard("test1", "test data 1", 1);
-
-// //testing card details
-// testCard1 = new CardData("test card 1", "This is the card test information");
-// testCard1.setPicture("local/fakelink");
-// console.log("Testing the card details")
-// testCard1.printDetails();
-
-//Make class accessible
-// export default CardBuilder;
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i >= 0; i--) {

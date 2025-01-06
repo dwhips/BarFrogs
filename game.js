@@ -90,18 +90,15 @@ function RedrawCards(redrawPlayerList,
         {
             //adding new list elements
             var newCardListItem = document.createElement("li");
-            newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details(); //TODO add cards 
+            newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details(); 
             
             elListPlayers.appendChild(newCardListItem);
         }
 
-        if (iPlayer == listPlayerCards.length--)
-        {
-            //adding spacing for the final card in a players list
-            var newCardListItem = document.createElement("li");
-            newCardListItem.textContent = "test end>>>\n";
-            elListPlayers.appendChild(newCardListItem);
-        }
+        //adding spacing for the final card in a players list
+        var newCardListItem = document.createElement("li");
+        newCardListItem.textContent = "";
+        elListPlayers.appendChild(newCardListItem);
     }
 
     //Redrawing deck cards
