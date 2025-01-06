@@ -1,74 +1,28 @@
-// Builds and manages cards loaded on page
+// Classes that builds and manages cards and players
 
-//TODO delete all of the card location stuff. Each player will be getting a list for their hand, no longer a master list
-
-
-const CardLocation = {
-    Hand: 'Hand', //Card is in a players hand
-    Deck: 'Deck', // Card is in the deck
-    Table: 'Table' // Card has been played on the table
-    //Active? Card is currently being used vs discard? TBD
-  };
-
+  //This card class stores details about every card.
   class CardData{
     name;
     details;
-    location;
-    playerOwner = -1; // -1 means in the deck, owner is the player index;
     pictureLink;
 
     constructor(strName, strDetails)
     {
         this.name = strName;
         this.details = strDetails;
-        this.location = CardLocation.Deck;
-        // this.playerOwner = -1; //-1 means in the deck, owner is player index
     }
 
     _name() {return this.name;}
     _details(){return this.details}
-    _location(){return this.location}
-    _playerOwner() {return this.playerOwner}
 
     setPicture(strPictureLink){
         this.pictureLink = strPictureLink;
-    }
-
-    //TODO I think giving each player and the table a seperate list will be easier
-    sendToPlayer(lngPlayer){
-        if (lngPlayer == -1) console.error("Cant set owner of card to -1, that is reserved for the deck");
-        this.playerOwner = lngPlayer;
-        this.location = CardLocation.Hand;
-    }
-    
-    sendToDeck(){
-        this.playerOwner = -1;
-        this.location = CardLocation.Deck;
-    }
-
-    sendToTable(){
-        this.location = CardLocation.Table;
-    }
-
-    playCard(){
-        this.sendToTable();
-
-        //TODO play cards effects
-    }
-
-    checkIfInDeck()
-    {
-        return this.location == CardLocation.Deck;
-        // return this.playerOwner == -1;
     }
 
     printDetails()
     {
         console.log("card name: " + this.name);
         console.log("card details: " + this.details);
-        console.log("Card location: " + this.location); //todo decode location
-        // console.log("card count: " + this.count);
-        // console.log("card link: " + testCard1.pictureLink);
     }
   }
 
@@ -142,8 +96,6 @@ class PlayerData{
 
     shuffleDeck(){
         shuffleArray(this.deckCardList);
-
-        //TODO for debugging, make this a button.
     }
 
     drawCard(iPlayer){
@@ -206,14 +158,13 @@ class PlayerData{
 
         if (totalCardsToDeal > this.deckCardList.length) throw new error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
 
-        var iCard = 0;
         for(var iPlayer = 0; iPlayer < this.playerList.length; iPlayer++)
         {
             for (var iPlayerCard = 0; iPlayerCard < this.playerStartHandCount; iPlayerCard++)
             {
                 this.drawCard(iPlayer);
             }
-            this.playerList[iPlayer].printPlayerCardList();
+            // this.playerList[iPlayer].printPlayerCardList();
         }
     }
  }

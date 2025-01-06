@@ -107,7 +107,7 @@ function RedrawCards(redrawPlayerList,
             {
                 //adding new list elements
                 var newCardListItem = document.createElement("li");
-                newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details(); 
+                newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details();
                 
                 elListPlayers.appendChild(newCardListItem);
             }
