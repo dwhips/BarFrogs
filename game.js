@@ -1,5 +1,4 @@
-// import CardBuilder from "./CardClass";
-
+//------------------Initializing variables and elements-----------------------------------
 var elButtonDrawCard = document.getElementById('GenCardButton');
 var elButtonRefreshUI = document.getElementById('RefreshCardsUi');
 var elCardText = document.getElementById('CardText');
@@ -7,23 +6,27 @@ var elCardText = document.getElementById('CardText');
 var elListPlayers = document.getElementById('PlayerList');
 var elListDeck = document.getElementById('DeckList');
 
-//=--------------------------------------------------
+//=-----------------Main: Building game---------------------------------
 //Testing the card class
 console.log("testing the card builder obj")
 var objCardManager = new CardManager(5);
 
+//Adding cards to the deck
 GenerateCards(objCardManager)
 
+//Generating players
 objCardManager.addPlayer("Daniel");
 objCardManager.addPlayer("Alex");
+objCardManager.addPlayer("Tim");
 
+//Initialiing gmae
 objCardManager.startGame();
+RedrawCards(true, true, objCardManager);
 // console.log(cardList.length)
 // CardBuilder objCards;
 
 
-
-//=--------------------------------------------------
+//=---------------------Element Listeners-----------------------------
 
 //Trigger drawing a card
 elButtonDrawCard.addEventListener('click', function() {
@@ -36,21 +39,7 @@ elButtonRefreshUI.addEventListener('click', function(){
     RedrawCards(true, true, objCardManager);
 }, false);
 
-
-// //Functions are more for testing //
-// function GetRandomCardIndex()
-// {
-//     console.log("card length" + cardList.length);
-//     return Math.floor(Math.random() * cardList.length);
-// }
-
-// function GetRandomCard()
-// {
-//     console.log(GetRandomCardIndex());
-//     console.log(cardList[GetRandomCardIndex()]);
-//     return cardList[GetRandomCardIndex()];
-// }
-
+//=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
 {
     objCards.addCard("Sleep", "You can take a nap", 5);
@@ -59,16 +48,18 @@ function GenerateCards(objCards)
     // -- Drink Punishing Cards
     //A curse card that be moved around, makes a player drink twice. You can stack curses on one player, playing curses on a new target removes all active curses.
     //Drink. Make someone drink
+    objCards.addCard("Curse", "Place the curse card in front of any player. Double any drinks they take for the rest of the game.", 2)
 
     // -- Protection cards
+    objCards.addCard("Protect", "Play this card to stop any drinking effect.", 5);
 
     // -- Drawing Cards
+    objCards.addCard("Gambler", "Place any number of cards from your hand into the deck. Draw the same number of cards. Shuffle", 2);
 
     // -- Stealing cards
-
-    //////
+    objCards.addCard("Steal", "Take a random card from a player of your choice", 4);
+    objCards.addCard("Baron", "Take a random card from every other player", 2);
 }
-
 
 
 //Managing how text is being updated
@@ -88,13 +79,12 @@ function RedrawCards(redrawPlayerList,
     }
         
     var listPlayers = objCardManager.playerList
-    // TODO have a UL for players
-    //TODO have another UL for the deck
-        //Both of them will have LI with card details printed
 
-
+    //Redrawing player hands
     for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
     {
+        //TODO there is an issue where the player cards are being removed each update. This does not happen for the deck printing
+        //There is someting in the player class deleting cards from their hand.
         var listPlayerCards = listPlayers[iPlayer].getPlayersHand()
         for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++)
         {
@@ -114,7 +104,7 @@ function RedrawCards(redrawPlayerList,
         }
     }
 
-    // TODO iterate through the deck list
+    //Redrawing deck cards
     var listDeck = objCardManager.deckCardList;
     for (var iDeckCard = 0; iDeckCard < listDeck.length; iDeckCard++)
     {
