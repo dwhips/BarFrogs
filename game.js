@@ -1,10 +1,12 @@
 //------------------Initializing variables and elements-----------------------------------
-var elButtonDrawCard = document.getElementById('GenCardButton');
-var elButtonRefreshUI = document.getElementById('RefreshCardsUi');
-var elCardText = document.getElementById('CardText');
+var elButtonDrawCard = document.getElementById("GenCardButton");
+var elButtonRefreshUI = document.getElementById("RefreshCardsUIButton");
+var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
-var elListPlayers = document.getElementById('PlayerList');
-var elListDeck = document.getElementById('DeckList');
+var elCardText = document.getElementById("CardText");
+
+var elListPlayers = document.getElementById("PlayerList");
+var elListDeck = document.getElementById("DeckList");
 
 //=-----------------Main: Building game---------------------------------
 //Testing the card class
@@ -30,8 +32,8 @@ RedrawCards(true, true, objCardManager);
 
 //Trigger drawing a card
 elButtonDrawCard.addEventListener('click', function() {
-    // cardText.innerText = GetRandomCard();
     elCardText.innerText = objCardManager.drawCard();
+    RedrawCards(true, true, objCardManager);
 }, false);
 
 //Trigger UI update
@@ -39,6 +41,10 @@ elButtonRefreshUI.addEventListener('click', function(){
     RedrawCards(true, true, objCardManager);
 }, false);
 
+elButtonShuffle.addEventListener("click", function(){
+    objCardManager.shuffleDeck();
+    RedrawCards(false, true, objCardManager);
+}, false)
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
 {
@@ -70,49 +76,48 @@ function RedrawCards(redrawPlayerList,
 )
 {
     if (redrawDeckList)
-    {
-        DeleteChildrenElements(elListDeck);
+        {
+            DeleteChildrenElements(elListDeck);
+   
+            //Redrawing deck cards
+            var listDeck = objCardManager.deckCardList;
+            for (var iDeckCard = 0; iDeckCard < listDeck.length; iDeckCard++)
+            {
+                //adding new list elements to deck
+                var newCardListItem = document.createElement("li");
+                newCardListItem.textContent = listDeck[iDeckCard]._name() + "-"+ listDeck[iDeckCard]._details(); 
+                
+                elListDeck.appendChild(newCardListItem);
+                console.log("printing test" + iDeckCard);
+            }
     }
         
     if (redrawPlayerList){
         DeleteChildrenElements(elListPlayers);
-    }
         
-    var listPlayers = objCardManager.playerList
-
-    //Redrawing player hands
-    for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
-    {
-        //TODO there is an issue where the player cards are being removed each update. This does not happen for the deck printing
-        //There is someting in the player class deleting cards from their hand.
-        var listPlayerCards = listPlayers[iPlayer].getPlayersHand()
-        for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++)
+        var listPlayers = objCardManager.playerList
+    
+        //Redrawing player hands
+        for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
         {
-            //adding new list elements
+            //TODO there is an issue where the player cards are being removed each update. This does not happen for the deck printing
+            //There is someting in the player class deleting cards from their hand.
+            var listPlayerCards = listPlayers[iPlayer].getPlayersHand()
+            for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++)
+            {
+                //adding new list elements
+                var newCardListItem = document.createElement("li");
+                newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details(); 
+                
+                elListPlayers.appendChild(newCardListItem);
+            }
+    
+            //adding spacing for the final card in a players list
             var newCardListItem = document.createElement("li");
-            newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details(); 
-            
+            newCardListItem.textContent = "";
             elListPlayers.appendChild(newCardListItem);
         }
-
-        //adding spacing for the final card in a players list
-        var newCardListItem = document.createElement("li");
-        newCardListItem.textContent = "";
-        elListPlayers.appendChild(newCardListItem);
     }
-
-    //Redrawing deck cards
-    var listDeck = objCardManager.deckCardList;
-    for (var iDeckCard = 0; iDeckCard < listDeck.length; iDeckCard++)
-    {
-        //adding new list elements to deck
-        var newCardListItem = document.createElement("li");
-        newCardListItem.textContent = listDeck[iDeckCard]._name() + "-"+ listDeck[iDeckCard]._details(); 
-        
-        elListDeck.appendChild(newCardListItem);
-        console.log("printing test" + iDeckCard);
-    }
-
 }
 
 function DeleteChildrenElements(parentElement)
