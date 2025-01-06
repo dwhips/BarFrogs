@@ -75,7 +75,7 @@ class PlayerData{
         this.playerList.push(new PlayerData(strPlayerName))
     }
 
-    addCard(strName, strDetails, count){
+    addNewCard(strName, strDetails, count){
         //loop count times, add to a list
         var i;
         for (i = 0; i < count; i++)
@@ -106,7 +106,7 @@ class PlayerData{
 
         if (this.deckCardList.length == 0)
         {
-            throw new error("The deck is empty, failed to draw a card");
+            throw new Error("The deck is empty, failed to draw a card");
         }
 
         var testCard = this.deckCardList.pop();

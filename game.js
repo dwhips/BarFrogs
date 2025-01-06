@@ -48,23 +48,23 @@ elButtonShuffle.addEventListener("click", function(){
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
 {
-    objCards.addCard("Sleep", "You can take a nap", 5);
-    objCards.addCard("Firebolt", "Do 5 damage", 5);
-    objCards.addCard("Drink", "Drink up!", 5);
+    objCards.addNewCard("Sleep", "You can take a nap", 5);
+    objCards.addNewCard("Firebolt", "Do 5 damage", 5);
+    objCards.addNewCard("Drink", "Drink up!", 5);
     // -- Drink Punishing Cards
     //A curse card that be moved around, makes a player drink twice. You can stack curses on one player, playing curses on a new target removes all active curses.
     //Drink. Make someone drink
-    objCards.addCard("Curse", "Place the curse card in front of any player. Double any drinks they take for the rest of the game.", 2)
+    objCards.addNewCard("Curse", "Place the curse card in front of any player. Double any drinks they take for the rest of the game.", 2)
 
     // -- Protection cards
-    objCards.addCard("Protect", "Play this card to stop any drinking effect.", 5);
+    objCards.addNewCard("Protect", "Play this card to stop any drinking effect.", 5);
 
     // -- Drawing Cards
-    objCards.addCard("Gambler", "Place any number of cards from your hand into the deck. Draw the same number of cards. Shuffle", 2);
+    objCards.addNewCard("Gambler", "Place any number of cards from your hand into the deck. Draw the same number of cards. Shuffle", 2);
 
     // -- Stealing cards
-    objCards.addCard("Steal", "Take a random card from a player of your choice", 4);
-    objCards.addCard("Baron", "Take a random card from every other player", 2);
+    objCards.addNewCard("Steal", "Take a random card from a player of your choice", 4);
+    objCards.addNewCard("Baron", "Take a random card from every other player", 2);
 }
 
 
