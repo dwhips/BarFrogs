@@ -163,13 +163,15 @@ function RedrawCards(redrawPlayerList,
         const elPlayersCardDivList = document.querySelectorAll('.PlayersCardDiv');
         var listPlayers = objCardManager.playerList
         
-        DeleteChildrenElements(elPlayersCardDivList);
+        
         //Redrawing player hands
 
         // Iterate over the elements
         //TODO this might not be safe it its out of sync with i player
         var iPlayer = 0;
         elPlayersCardDivList.forEach(elPlayersCardDiv => {
+            DeleteChildrenElements(elPlayersCardDiv);
+
             var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
             for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
                 elPlayersCardDiv.appendChild(CreatePlayerCardUI(listPlayerCards, iPlayersCard));
