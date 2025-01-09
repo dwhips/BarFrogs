@@ -110,7 +110,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     //Trigger drawing a card
     //TODO need to make this specific to the player number (draw card for iPlayer)
     elDrawCardButton.addEventListener('click', function() {
-        objCardManager.drawCard();
+        objCardManager.drawCard(lngPlayerNumber);
         RedrawCards(true, true, objCardManager);
     }, false);
 
@@ -121,9 +121,6 @@ function AddPlayerUI(strName, lngPlayerNumber)
     var elPlayersCardDiv = document.createElement("div");
     elPlayersCardDiv.classList.add("PlayersCardDiv");
     elPlayerDiv.appendChild(elPlayersCardDiv);
-
-
-    // var elPlayerCardList = document.createElement("ul") //TODO probably replace this eventually
     
     //Adding new player div to doc
     elPlayerBody.appendChild(elPlayerDiv);
@@ -155,7 +152,6 @@ function RedrawCards(redrawPlayerList,
                 newCardListItem.textContent = listDeck[iDeckCard]._name() + "-"+ listDeck[iDeckCard]._details(); 
                 
                 elListDeck.appendChild(newCardListItem);
-                console.log("printing test" + iDeckCard);
             }
     }
         
