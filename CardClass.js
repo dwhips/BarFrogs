@@ -10,8 +10,10 @@
     {
         this.name = strName;
         this.details = strDetails;
+        // this.pictureLink = strPictureLink;
     }
 
+    //TODO make all class getters have this _ big for standards
     _name() {return this.name;}
     _details(){return this.details}
 
@@ -31,9 +33,9 @@ class PlayerData{
     playersHand = [];
     playersTableHand = []; //TODO pending what is the easiest way to manage this// This would be the cards played by a plyer (if they need to be on the table)
 
-    constructor(strName)
+    constructor(strPlayerName)
     {
-        this.name = strName;
+        this.name = strPlayerName;
     }
 
     getName(){
@@ -85,7 +87,7 @@ class PlayerData{
         }
     }
 
-    getCardFromList(iCard){
+    getCardFromDeck(iCard){
         return this.deckCardList[iCard];
     }
 
@@ -109,19 +111,9 @@ class PlayerData{
             throw new Error("The deck is empty, failed to draw a card");
         }
 
-        var testCard = this.deckCardList.pop();
-        this.playerList[iPlayer].addCardToHand(testCard);
-        console.log("/////////Drawing card "+ testCard.name +" for player : " + iPlayer);
-
-        //TODO dont want to actually remove card from master list, just a test
-        // var testCard = this.fullCardList.pop();
-
-        // //Giving card to the current player
-        // var topCard = this.getTopOfDeck();
-
-        // //TODO!!!!!!!!!!!!!!!!!!!!!!!!
-        // //Need to pull the top card that is in the deck, not just the top card
-        // this.fullCardList[topCard].sendToPlayer(iPlayer);
+        var objCard = this.deckCardList.pop();
+        this.playerList[iPlayer].addCardToHand(objCard);
+        console.log("/////////Drawing card "+ objCard.name +" for player : " + iPlayer);
     }
 
     //This is the position of the card on top of the deck 

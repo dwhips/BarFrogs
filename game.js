@@ -5,8 +5,13 @@ var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
 var elCardText = document.getElementById("CardText");
 
-var elListPlayers = document.getElementById("PlayerList");
+// var elListPlayers = document.getElementById("PlayerList");
 var elListDeck = document.getElementById("DeckList");
+
+
+
+var elPlayerBody = document.getElementById("PlayersBody");
+
 
 //=-----------------Main: Building game---------------------------------
 //Testing the card class
@@ -21,12 +26,10 @@ objCardManager.addPlayer("Daniel");
 objCardManager.addPlayer("Alex");
 objCardManager.addPlayer("Tim");
 
-//Initialiing gmae
+//Initializing Game
 objCardManager.startGame();
-RedrawCards(true, true, objCardManager);
-// console.log(cardList.length)
-// CardBuilder objCards;
 
+InitUI(objCardManager);
 
 //=---------------------Element Listeners-----------------------------
 
@@ -45,6 +48,7 @@ elButtonShuffle.addEventListener("click", function(){
     objCardManager.shuffleDeck();
     RedrawCards(false, true, objCardManager);
 }, false)
+
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
 {
@@ -67,9 +71,72 @@ function GenerateCards(objCards)
     objCards.addNewCard("Baron", "Take a random card from every other player", 2);
 }
 
+//Adds buttons, cards, etc for each player and stores them in the element list
+function InitUI(objCardManager)
+{
+    //TODO add this to the game setup
+    var listPlayers = objCardManager.playerList
+    for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
+    {
+        AddPlayerUI(listPlayers[iPlayer].getName(), iPlayer);
+    }
+
+    //TODO add event listeners when adding object
+
+
+    RedrawCards(true, true, objCardManager);
+}
+
+function AddPlayerUI(strName, lngPlayerNumber)
+{
+    //TODO make classes a constant
+    var elPlayerDiv = document.createElement("div");
+    elPlayerDiv.classList.add("PlayerDiv");
+    
+    var elPlayerName = document.createElement("p");
+    elPlayerName.textContent = strName;
+    elPlayerName.classList.add("PlayerName")
+    elPlayerDiv.appendChild(elPlayerName)
+
+    //TODO is there a better way to track a players number?
+    var elPlayerNumber = document.createElement("p");
+    elPlayerNumber.textContent = lngPlayerNumber;
+    elPlayerNumber.classList.add("PlayerNumber");
+    elPlayerDiv.appendChild(elPlayerNumber);
+
+    var elDrawCardButton = document.createElement("button");
+    elDrawCardButton.textContent = "Draw Card";
+
+    //Trigger drawing a card
+    //TODO need to make this specific to the player number (draw card for iPlayer)
+    elDrawCardButton.addEventListener('click', function() {
+        objCardManager.drawCard();
+        RedrawCards(true, true, objCardManager);
+    }, false);
+
+    elPlayerDiv.appendChild(elDrawCardButton);
+
+    //Adding div for player cards
+    //This relys on RedrawCards to add all of the card elements to this
+    var elPlayersCardDiv = document.createElement("div");
+    elPlayersCardDiv.classList.add("PlayersCardDiv");
+    elPlayerDiv.appendChild(elPlayersCardDiv);
+
+
+    // var elPlayerCardList = document.createElement("ul") //TODO probably replace this eventually
+    
+    //Adding new player div to doc
+    elPlayerBody.appendChild(elPlayerDiv);
+}
+
+function CreatePlayerCardUI(objPlayersCardHand, iCard)
+{
+    var newCardListItem = document.createElement("p");
+    newCardListItem.textContent = "__"+ iCard +"__" + objPlayersCardHand[iCard]._name() + "- "+ objPlayersCardHand[iCard]._details();
+    return newCardListItem;
+}
 
 //Managing how text is being updated
-//TODO for now just have this linked to a button. But down the line, call this function on event updates.
 function RedrawCards(redrawPlayerList,
     redrawDeckList,
     objCardManager
@@ -93,30 +160,22 @@ function RedrawCards(redrawPlayerList,
     }
         
     if (redrawPlayerList){
-        DeleteChildrenElements(elListPlayers);
-        
+        const elPlayersCardDivList = document.querySelectorAll('.PlayersCardDiv');
         var listPlayers = objCardManager.playerList
-    
+        
+        DeleteChildrenElements(elPlayersCardDivList);
         //Redrawing player hands
-        for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
-        {
-            //TODO there is an issue where the player cards are being removed each update. This does not happen for the deck printing
-            //There is someting in the player class deleting cards from their hand.
-            var listPlayerCards = listPlayers[iPlayer].getPlayersHand()
-            for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++)
-            {
-                //adding new list elements
-                var newCardListItem = document.createElement("li");
-                newCardListItem.textContent = listPlayers[iPlayer].getName() + ": " + listPlayerCards[iPlayersCard]._name() + "-"+ listPlayerCards[iPlayersCard]._details();
-                
-                elListPlayers.appendChild(newCardListItem);
+
+        // Iterate over the elements
+        //TODO this might not be safe it its out of sync with i player
+        var iPlayer = 0;
+        elPlayersCardDivList.forEach(elPlayersCardDiv => {
+            var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
+            for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
+                elPlayersCardDiv.appendChild(CreatePlayerCardUI(listPlayerCards, iPlayersCard));
             }
-    
-            //adding spacing for the final card in a players list
-            var newCardListItem = document.createElement("li");
-            newCardListItem.textContent = "";
-            elListPlayers.appendChild(newCardListItem);
-        }
+            iPlayer++;
+        });
     }
 }
 
