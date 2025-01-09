@@ -4,14 +4,13 @@ var elButtonRefreshUI = document.getElementById("RefreshCardsUIButton");
 var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
 var elCardText = document.getElementById("CardText");
-
-// var elListPlayers = document.getElementById("PlayerList");
 var elListDeck = document.getElementById("DeckList");
 
-
-
 var elPlayerBody = document.getElementById("PlayersBody");
-
+const strPlayerDivClass = "PlayerDiv";
+const strPlayerNameClass = "PlayerName";
+const strPlayerNumberClass = "PlayerNumber";
+const strPlayersCardDivClass = "PlayersCardDiv";
 
 //=-----------------Main: Building game---------------------------------
 //Testing the card class
@@ -91,17 +90,17 @@ function AddPlayerUI(strName, lngPlayerNumber)
 {
     //TODO make classes a constant
     var elPlayerDiv = document.createElement("div");
-    elPlayerDiv.classList.add("PlayerDiv");
+    elPlayerDiv.classList.add(strPlayerDivClass);
     
     var elPlayerName = document.createElement("p");
     elPlayerName.textContent = strName;
-    elPlayerName.classList.add("PlayerName")
+    elPlayerName.classList.add(strPlayerNameClass)
     elPlayerDiv.appendChild(elPlayerName)
 
     //TODO is there a better way to track a players number?
     var elPlayerNumber = document.createElement("p");
     elPlayerNumber.textContent = lngPlayerNumber;
-    elPlayerNumber.classList.add("PlayerNumber");
+    elPlayerNumber.classList.add(strPlayerNumberClass);
     elPlayerDiv.appendChild(elPlayerNumber);
 
     var elDrawCardButton = document.createElement("button");
@@ -119,7 +118,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     //Adding div for player cards
     //This relys on RedrawCards to add all of the card elements to this
     var elPlayersCardDiv = document.createElement("div");
-    elPlayersCardDiv.classList.add("PlayersCardDiv");
+    elPlayersCardDiv.classList.add(strPlayersCardDivClass);
     elPlayerDiv.appendChild(elPlayersCardDiv);
     
     //Adding new player div to doc
@@ -156,7 +155,7 @@ function RedrawCards(redrawPlayerList,
     }
         
     if (redrawPlayerList){
-        const elPlayersCardDivList = document.querySelectorAll('.PlayersCardDiv');
+        const elPlayersCardDivList = document.querySelectorAll("." + strPlayersCardDivClass);
         var listPlayers = objCardManager.playerList
         
         
