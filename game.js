@@ -1,9 +1,7 @@
 //------------------Initializing variables and elements-----------------------------------
-var elButtonDrawCard = document.getElementById("GenCardButton");
 var elButtonRefreshUI = document.getElementById("RefreshCardsUIButton");
 var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
-var elCardText = document.getElementById("CardText");
 var elListDeck = document.getElementById("DeckList");
 
 var elPlayerBody = document.getElementById("PlayersBody");
@@ -31,12 +29,6 @@ objCardManager.startGame();
 InitUI(objCardManager);
 
 //=---------------------Element Listeners-----------------------------
-
-//Trigger drawing a card
-elButtonDrawCard.addEventListener('click', function() {
-    elCardText.innerText = objCardManager.drawCard();
-    RedrawCards(true, true, objCardManager);
-}, false);
 
 //Trigger UI update
 elButtonRefreshUI.addEventListener('click', function(){
@@ -103,17 +95,19 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elPlayerNumber.classList.add(strPlayerNumberClass);
     elPlayerDiv.appendChild(elPlayerNumber);
 
+    //Trigger drawing a card
     var elDrawCardButton = document.createElement("button");
     elDrawCardButton.textContent = "Draw Card";
 
-    //Trigger drawing a card
-    //TODO need to make this specific to the player number (draw card for iPlayer)
     elDrawCardButton.addEventListener('click', function() {
         objCardManager.drawCard(lngPlayerNumber);
         RedrawCards(true, true, objCardManager);
     }, false);
 
     elPlayerDiv.appendChild(elDrawCardButton);
+
+    //TODO add a steal button
+    //Add a hide/open button
 
     //Adding div for player cards
     //This relys on RedrawCards to add all of the card elements to this
