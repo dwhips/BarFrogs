@@ -13,7 +13,7 @@
         // this.pictureLink = strPictureLink;
     }
 
-    //TODO make all class getters have this _ big for standards
+    //TODO make all class getters have this _ bit for standards
     _name() {return this.name;}
     _details(){return this.details}
 
@@ -50,6 +50,11 @@ class PlayerData{
     addCardToHand(objCard)
     {
         this.playersHand.push(objCard);
+    }
+
+    playCard()
+    {
+        //TODO Need a way for the html page to tell this class which card in the hand to sent to playersHand[]
     }
 
     printPlayerCardList()

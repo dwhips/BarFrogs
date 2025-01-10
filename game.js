@@ -65,35 +65,40 @@ function GenerateCards(objCards)
 //Adds buttons, cards, etc for each player and stores them in the element list
 function InitUI(objCardManager)
 {
-    //TODO add this to the game setup
     var listPlayers = objCardManager.playerList
     for (var iPlayer = 0; iPlayer < listPlayers.length; iPlayer++)
     {
         AddPlayerUI(listPlayers[iPlayer].getName(), iPlayer);
     }
 
-    //TODO add event listeners when adding object
-
-
     RedrawCards(true, true, objCardManager);
 }
 
 function AddPlayerUI(strName, lngPlayerNumber)
 {
-    //TODO make classes a constant
     var elPlayerDiv = document.createElement("div");
     elPlayerDiv.classList.add(strPlayerDivClass);
+
+    var elPlayersCardDiv = document.createElement("div");
+    elPlayersCardDiv.classList.add(strPlayersCardDivClass);
     
     var elPlayerName = document.createElement("p");
-    elPlayerName.textContent = strName;
+    elPlayerName.textContent = lngPlayerNumber + ". " + strName;
     elPlayerName.classList.add(strPlayerNameClass)
     elPlayerDiv.appendChild(elPlayerName)
 
+    var elToggleVisibilityButton = document.createElement("button");
+    elToggleVisibilityButton.textContent = "Hide";
+    elToggleVisibilityButton.addEventListener('click', function(){
+        ToggleEementVisibility(elPlayersCardDiv, elToggleVisibilityButton);
+    }, false);
+    elPlayerDiv.appendChild(elToggleVisibilityButton)
+
     //TODO is there a better way to track a players number?
-    var elPlayerNumber = document.createElement("p");
-    elPlayerNumber.textContent = lngPlayerNumber;
-    elPlayerNumber.classList.add(strPlayerNumberClass);
-    elPlayerDiv.appendChild(elPlayerNumber);
+    // var elPlayerNumber = document.createElement("p");
+    // elPlayerNumber.textContent = lngPlayerNumber;
+    // elPlayerNumber.classList.add(strPlayerNumberClass);
+    // elPlayerDiv.appendChild(elPlayerNumber);
 
     //Trigger drawing a card
     var elDrawCardButton = document.createElement("button");
@@ -106,13 +111,12 @@ function AddPlayerUI(strName, lngPlayerNumber)
 
     elPlayerDiv.appendChild(elDrawCardButton);
 
-    //TODO add a steal button
-    //Add a hide/open button
+    //TODO add a steal button!!
 
     //Adding div for player cards
     //This relys on RedrawCards to add all of the card elements to this
-    var elPlayersCardDiv = document.createElement("div");
-    elPlayersCardDiv.classList.add(strPlayersCardDivClass);
+    
+    //Adding card list to the player div
     elPlayerDiv.appendChild(elPlayersCardDiv);
     
     //Adding new player div to doc
@@ -122,7 +126,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
 {
     var newCardListItem = document.createElement("p");
-    newCardListItem.textContent = "__"+ iCard +"__" + objPlayersCardHand[iCard]._name() + "- "+ objPlayersCardHand[iCard]._details();
+    newCardListItem.textContent = iCard +". " + objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
     return newCardListItem;
 }
 
@@ -170,9 +174,21 @@ function RedrawCards(redrawPlayerList,
     }
 }
 
+//Generic functions
+
 function DeleteChildrenElements(parentElement)
 {
     while (parentElement.firstChild) {
         parentElement.firstChild.remove()
     }
 }
+
+function ToggleEementVisibility(objHtmlElement, objButtonElement) {
+    if (objHtmlElement.style.display === "none") {
+        objHtmlElement.style.display = "block";
+        objButtonElement.textContent = "Hide";
+    } else {
+        objHtmlElement.style.display = "none";
+        objButtonElement.textContent = "Show";
+    }
+  }
