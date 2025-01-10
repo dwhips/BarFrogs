@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>&lt;title&gt; element</title>
+    <link rel="stylesheet" href="Base.css">
   </head>
   <body>
     
@@ -32,23 +33,18 @@
 
         <section>
             <!-- Game -->
-             <div>
+             <div id="GameControlsHeader">
                 <button id="RefreshCardsUIButton" type="button">Refresh UI</button> 
-                <button id="GenCardButton" type="button">Generate Random Card</button> 
                 <button id="ShuffleDeckButton" type="button">Shuffle</button>
-                <p id="CardText">Card Text</p>
             </div>
 
-            <p>Player Card List</p>
-            <ul id="PlayerList">
-                <!-- <li><button>daniel</button> </li>
-                <li><button>Alex</button> </li> -->
-            </ul>
-
-            <p>Deck Card List</p>
-            <ul id="DeckList">
-
-            </ul>
+            <div id="GameControlBody">
+                <div id="PlayersBody"></div>
+    
+                <p>Deck Card List</p>
+                <ul id="DeckList"></ul>
+            </div>
+            
         </section>
 
         <script src="CardClass.js"></script>
