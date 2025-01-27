@@ -5,6 +5,7 @@
     name;
     details;
     pictureLink;
+    //TODO need other properties about the card specifics (draw from deck, steal card, drink, etc). Need to break apart card functionality into the card contructor
 
     constructor(strName, strDetails)
     {
@@ -103,6 +104,10 @@ class PlayerData{
 
     shuffleDeck(){
         shuffleArray(this.deckCardList);
+    }
+
+    getTotalPlayers(){
+        return this.playerList.length;
     }
 
     drawCard(iPlayer){

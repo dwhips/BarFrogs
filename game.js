@@ -1,5 +1,4 @@
 //------------------Initializing variables and elements-----------------------------------
-var elButtonRefreshUI = document.getElementById("RefreshCardsUIButton");
 var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
 var elListDeck = document.getElementById("DeckList");
@@ -10,10 +9,15 @@ const strPlayerNameClass = "PlayerName";
 const strPlayerNumberClass = "PlayerNumber";
 const strPlayersCardDivClass = "PlayersCardDiv";
 
+var elAddPlayerButton = document.getElementById("AddPlayerButton");
+var elAddPlayerTextField = document.getElementById("AddPlayerTextField");
+
+const totalStartingCardHand = 5;
+
 //=-----------------Main: Building game---------------------------------
 //Testing the card class
 console.log("testing the card builder obj")
-var objCardManager = new CardManager(5);
+var objCardManager = new CardManager(totalStartingCardHand);
 
 //Adding cards to the deck
 GenerateCards(objCardManager)
@@ -21,7 +25,6 @@ GenerateCards(objCardManager)
 //Generating players
 objCardManager.addPlayer("Daniel");
 objCardManager.addPlayer("Alex");
-objCardManager.addPlayer("Tim");
 
 //Initializing Game
 objCardManager.startGame();
@@ -29,16 +32,21 @@ objCardManager.startGame();
 InitUI(objCardManager);
 
 //=---------------------Element Listeners-----------------------------
-
-//Trigger UI update
-elButtonRefreshUI.addEventListener('click', function(){
-    RedrawCards(true, true, objCardManager);
-}, false);
-
 elButtonShuffle.addEventListener("click", function(){
     objCardManager.shuffleDeck();
     RedrawCards(false, true, objCardManager);
-}, false)
+}, false);
+
+elAddPlayerButton.addEventListener("click", function () {
+    //Getting the new players name from the text field value to add a new player
+    objCardManager.addPlayer(elAddPlayerTextField.value);
+
+    //TODO this should also start dealing cards to newly added players, but the BEST solution for this is to have a pending game setup state (adding players) and then another stage
+    //Where the game is actually being played. Don't need to rework how cards are dealt yet.
+    AddPlayerUI(elAddPlayerTextField.value, objCardManager.getTotalPlayers() - 1);
+    
+    RedrawCards(true, true, objCardManager);
+}, false);
 
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
@@ -76,6 +84,7 @@ function InitUI(objCardManager)
 
 function AddPlayerUI(strName, lngPlayerNumber)
 {
+    //Creating base player UI
     var elPlayerDiv = document.createElement("div");
     elPlayerDiv.classList.add(strPlayerDivClass);
 
@@ -87,10 +96,11 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elPlayerName.classList.add(strPlayerNameClass)
     elPlayerDiv.appendChild(elPlayerName)
 
+    //Creating base player buttons
     var elToggleVisibilityButton = document.createElement("button");
     elToggleVisibilityButton.textContent = "Hide";
     elToggleVisibilityButton.addEventListener('click', function(){
-        ToggleEementVisibility(elPlayersCardDiv, elToggleVisibilityButton);
+        ToggleElementVisibility(elPlayersCardDiv, elToggleVisibilityButton);
     }, false);
     elPlayerDiv.appendChild(elToggleVisibilityButton)
 
@@ -130,7 +140,8 @@ function CreatePlayerCardUI(objPlayersCardHand, iCard)
     return newCardListItem;
 }
 
-//Managing how text is being updated
+//Managing how cards are being drawn, this is a refresh UI function to redraw all card componenents for a player vs the deck\
+
 function RedrawCards(redrawPlayerList,
     redrawDeckList,
     objCardManager
@@ -183,7 +194,7 @@ function DeleteChildrenElements(parentElement)
     }
 }
 
-function ToggleEementVisibility(objHtmlElement, objButtonElement) {
+function ToggleElementVisibility(objHtmlElement, objButtonElement) {
     if (objHtmlElement.style.display === "none") {
         objHtmlElement.style.display = "block";
         objButtonElement.textContent = "Hide";
