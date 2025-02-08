@@ -8,9 +8,13 @@ const strPlayerDivClass = "PlayerDiv";
 const strPlayerNameClass = "PlayerName";
 const strPlayerNumberClass = "PlayerNumber";
 const strPlayersCardDivClass = "PlayersCardDiv";
+const strStealModalPlayerName = "StealModalPlayerName";
 
 var elAddPlayerButton = document.getElementById("AddPlayerButton");
 var elAddPlayerTextField = document.getElementById("AddPlayerTextField");
+var elStealModal = document.getElementById("StealModalContainer");
+var elStealPlayerModal = document.getElementById("StealModalPlayerContainer");
+var elStealModalCloseButton = document.getElementById("StealModalCloseButton");
 
 const totalStartingCardHand = 5;
 
@@ -22,7 +26,7 @@ var objCardManager = new CardManager(totalStartingCardHand);
 //Adding cards to the deck
 GenerateCards(objCardManager)
 
-//Generating players
+//Generating default players
 objCardManager.addPlayer("Daniel");
 objCardManager.addPlayer("Alex");
 
@@ -47,6 +51,10 @@ elAddPlayerButton.addEventListener("click", function () {
     
     RedrawCards(true, true, objCardManager);
 }, false);
+
+elStealModalCloseButton.addEventListener("click", function() {
+    elStealModal.style.display = "none";
+}, false)
 
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
@@ -121,7 +129,29 @@ function AddPlayerUI(strName, lngPlayerNumber)
 
     elPlayerDiv.appendChild(elDrawCardButton);
 
-    //TODO add a steal button!!
+    //============= Steal 
+    //to handle a card with steal, need to know which player to steal from then randomly pull a card from their hand
+    var elStealCardButton = document.createElement("button");
+    elStealCardButton.textContent = "Steal Card";
+
+    elStealCardButton.addEventListener('click', function() {
+        //TODO probably need to use lngPlayerNumber to hide the current player from the list of options to steal from
+        elStealModal.style.display = "inline";
+    }, false);
+
+    elPlayerDiv.appendChild(elStealCardButton);
+    //Adding player to the list of options to steal from
+    
+    var elStealFromPlayerName = document.createElement("p");
+    elStealFromPlayerName.textContent = strName;
+    elStealFromPlayerName.classList.add(strStealModalPlayerName);
+    elStealPlayerModal.appendChild(elStealFromPlayerName);
+    
+    elStealFromPlayerName.addEventListener('click' ,function(){
+        //TODO need a way to get the current player......
+        objCardManager.stealCard(0, lngPlayerNumber);
+        RedrawCards(true, false, objCardManager);
+    }, false);
 
     //Adding div for player cards
     //This relys on RedrawCards to add all of the card elements to this
@@ -135,6 +165,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
 
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
 {
+    console.log("Trying to build card number: " + iCard);
     var newCardListItem = document.createElement("p");
     newCardListItem.textContent = iCard +". " + objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
     return newCardListItem;

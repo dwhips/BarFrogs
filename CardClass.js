@@ -6,6 +6,10 @@
     details;
     pictureLink;
     //TODO need other properties about the card specifics (draw from deck, steal card, drink, etc). Need to break apart card functionality into the card contructor
+    //Properties would best be setup like
+    //this.TotalDrawCount >> Normally 0, but if set then draw one card.
+    //this.TotalStealCard >> 0 - x, steal x cards (then a bool to see if you can steal from multiple players)
+//And all of this would be evaluated on the cards Play() function to know what to do.
 
     constructor(strName, strDetails)
     {
@@ -80,6 +84,10 @@ class PlayerData{
     }
 
     addPlayer(strPlayerName){
+
+        if (strPlayerName == "") throw new error("Adding a new player name cannot be empty");
+        // TODO should check if the name is already used 
+
         this.playerList.push(new PlayerData(strPlayerName))
     }
 
@@ -124,6 +132,14 @@ class PlayerData{
         var objCard = this.deckCardList.pop();
         this.playerList[iPlayer].addCardToHand(objCard);
         console.log("/////////Drawing card "+ objCard.name +" for player : " + iPlayer);
+    }
+
+    stealCard(iPlayerThief, iPlayerVictim){
+        //Getting a random card from victim
+        const j = randomInt(this.playerList[iPlayerVictim].playersHand.length);
+        var objStolenCard =  this.playerList[iPlayerVictim].playersHand.splice(j, 1)[0];
+        this.playerList[iPlayerThief].addCardToHand(objStolenCard);
+        
     }
 
     //This is the position of the card on top of the deck 
@@ -177,4 +193,10 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+function randomInt(max){
+    var test  = Math.floor(Math.random() * max);
+    console.log(test);
+    return test;
 }
