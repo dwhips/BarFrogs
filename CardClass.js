@@ -5,6 +5,11 @@
     name;
     details;
     pictureLink;
+    //TODO need other properties about the card specifics (draw from deck, steal card, drink, etc). Need to break apart card functionality into the card contructor
+    //Properties would best be setup like
+    //this.TotalDrawCount >> Normally 0, but if set then draw one card.
+    //this.TotalStealCard >> 0 - x, steal x cards (then a bool to see if you can steal from multiple players)
+//And all of this would be evaluated on the cards Play() function to know what to do.
 
     constructor(strName, strDetails)
     {
@@ -79,6 +84,10 @@ class PlayerData{
     }
 
     addPlayer(strPlayerName){
+
+        if (strPlayerName == "") throw new Error("Adding a new player name cannot be empty");
+        // TODO should check if the name is already used 
+
         this.playerList.push(new PlayerData(strPlayerName))
     }
 
@@ -98,11 +107,27 @@ class PlayerData{
 
     getCurrentPlayer()
     {
+        console.log("Getting current player: " + this.iCurrentPlayer);
         return this.iCurrentPlayer;
+    }
+
+    findPlayerByName(strName)
+    {
+        for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
+            if (this.playerList[iPlayer].name === strName){
+                // console.log("Found [" + strName + ": " + iPlayer + "] in findPlayerByName");
+                return iPlayer;
+            }
+        }
+        throw new Error("Failed to find player [" + strName + "] in the player list");
     }
 
     shuffleDeck(){
         shuffleArray(this.deckCardList);
+    }
+
+    getTotalPlayers(){
+        return this.playerList.length;
     }
 
     drawCard(iPlayer){
@@ -121,23 +146,16 @@ class PlayerData{
         console.log("/////////Drawing card "+ objCard.name +" for player : " + iPlayer);
     }
 
-    //This is the position of the card on top of the deck 
-    //TODO not sure about this way, it seems pretty messy
-    //Trying to purge thi
-    // getTopOfDeck(){
-    //     for(var iCard = 0; iCard < this.fullCardList.length--; iCard++)
-    //     {
-    //         // var objCard = this.fullCardList[iCard];
-    //         // console.log("testin pullin out obj");
-
-    //         // console.log(objCard._location());
-    //         if (this.getCardFromList(iCard)._location() == CardLocation.Deck) {
-    //             console.log("The top card is " + iCard + ". Printing details.");
-    //             this.getCardFromList(iCard).printDetails();
-    //             return iCard;
-    //         }
-    //     }
-    // }
+    stealCard(iPlayerThief, iPlayerVictim){
+        //Getting a random card from victim
+        if (this.playerList[iPlayerVictim].playersHand.length === 0) {
+            throw new Error("Cannot steal from target player [" + iPlayerVictim + "] who doesnt have any more cards" );
+        }
+        const j = randomInt(this.playerList[iPlayerVictim].playersHand.length);
+        var objStolenCard =  this.playerList[iPlayerVictim].playersHand.splice(j, 1)[0];
+        this.playerList[iPlayerThief].addCardToHand(objStolenCard);
+        
+    }
 
     startGame(){
         //intial setup
@@ -148,12 +166,20 @@ class PlayerData{
         this.initialDeal();
     }
 
+    nextPlayer(){
+        this.iCurrentPlayer++;
+        if (this.iCurrentPlayer >= this.getTotalPlayers())
+        {
+            this.iCurrentPlayer = 0;
+        }
+    }
+
     initialDeal()
     {
         var totalCardsToDeal = this.playerList.length * this.playerStartHandCount;
         console.log("Total cards to deal: " + totalCardsToDeal);
 
-        if (totalCardsToDeal > this.deckCardList.length) throw new error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
+        if (totalCardsToDeal > this.deckCardList.length) throw new Error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
 
         for(var iPlayer = 0; iPlayer < this.playerList.length; iPlayer++)
         {
@@ -172,4 +198,10 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+function randomInt(max){
+    var test  = Math.floor(Math.random() * max);
+    console.log(test);
+    return test;
 }

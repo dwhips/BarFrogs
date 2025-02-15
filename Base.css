@@ -2,3 +2,21 @@
     outline-style: solid;
     padding: 10px;
 }
+
+#StealModalContainer{
+    display: none;
+}
+
+section{
+    border: solid;
+}
+
+.StealModalPlayerName:hover{
+    outline-style: solid;
+    outline-color: red;
+}
+
+/* Hiding the deck list */
+#DeckListContainer{
+    display: none;
+}
