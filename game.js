@@ -116,12 +116,6 @@ function AddPlayerUI(strName, lngPlayerNumber)
     }, false);
     elPlayerDiv.appendChild(elToggleVisibilityButton)
 
-    //TODO is there a better way to track a players number?
-    // var elPlayerNumber = document.createElement("p");
-    // elPlayerNumber.textContent = lngPlayerNumber;
-    // elPlayerNumber.classList.add(strPlayerNumberClass);
-    // elPlayerDiv.appendChild(elPlayerNumber);
-
     //Trigger drawing a card
     var elDrawCardButton = document.createElement("button");
     elDrawCardButton.textContent = "Draw Card";
@@ -167,6 +161,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
         objCardManager.stealCard(iThiefPlayer, iVictimPlayer);
         //We really need a state machine
         RedrawCardsAndPlayersUI(true, false, objCardManager);
+        RedrawStealModalUI("", 0, true);
     }, false);
 
     //=============== End Turn
