@@ -15,3 +15,8 @@ section{
     outline-style: solid;
     outline-color: red;
 }
+
+/* Hiding the deck list */
+#DeckListContainer{
+    display: none;
+}

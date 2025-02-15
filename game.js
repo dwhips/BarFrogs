@@ -30,6 +30,7 @@ GenerateCards(objCardManager)
 //Generating default players
 objCardManager.addPlayer("Daniel");
 objCardManager.addPlayer("Alex");
+objCardManager.addPlayer("Rebecca");
 
 //Initializing Game
 objCardManager.startGame();

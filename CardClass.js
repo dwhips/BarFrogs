@@ -156,24 +156,6 @@ class PlayerData{
         
     }
 
-    //This is the position of the card on top of the deck 
-    //TODO not sure about this way, it seems pretty messy
-    //Trying to purge thi
-    // getTopOfDeck(){
-    //     for(var iCard = 0; iCard < this.fullCardList.length--; iCard++)
-    //     {
-    //         // var objCard = this.fullCardList[iCard];
-    //         // console.log("testin pullin out obj");
-
-    //         // console.log(objCard._location());
-    //         if (this.getCardFromList(iCard)._location() == CardLocation.Deck) {
-    //             console.log("The top card is " + iCard + ". Printing details.");
-    //             this.getCardFromList(iCard).printDetails();
-    //             return iCard;
-    //         }
-    //     }
-    // }
-
     startGame(){
         //intial setup
         this.iCurrentPlayer = 0;
