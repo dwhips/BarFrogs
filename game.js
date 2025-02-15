@@ -2,6 +2,7 @@
 var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
 var elListDeck = document.getElementById("DeckList");
+var elTotalDeckCards = document.getElementById("totalDeckCards");
 
 var elPlayerBody = document.getElementById("PlayersBody");
 const strPlayerDivClass = "PlayerDiv";
@@ -102,7 +103,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elPlayersCardDiv.classList.add(strPlayersCardDivClass);
     
     var elPlayerName = document.createElement("p");
-    elPlayerName.textContent = lngPlayerNumber + ". " + strName;
+    elPlayerName.textContent = strName;
     elPlayerName.classList.add(strPlayerNameClass)
     elPlayerDiv.appendChild(elPlayerName)
 
@@ -200,7 +201,8 @@ function AddPlayerUI(strName, lngPlayerNumber)
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
 {
     var newCardListItem = document.createElement("p");
-    newCardListItem.textContent = iCard +". " + objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
+    let strDisplayCardNumber = (iCard + 1).toString();
+    newCardListItem.textContent = objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
     return newCardListItem;
 }
 
@@ -225,6 +227,9 @@ function RedrawCards(redrawPlayerList,
                 
                 elListDeck.appendChild(newCardListItem);
             }
+
+            //Updating the remaining card deck count
+            elTotalDeckCards.innerText = listDeck.length;
     }
         
     if (redrawPlayerList){
