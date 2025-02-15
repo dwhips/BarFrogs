@@ -15,6 +15,7 @@ var elAddPlayerTextField = document.getElementById("AddPlayerTextField");
 var elStealModal = document.getElementById("StealModalContainer");
 var elStealPlayerModal = document.getElementById("StealModalPlayerContainer");
 var elStealModalCloseButton = document.getElementById("StealModalCloseButton");
+var elStealModalPlayerTitle = document.getElementById("StealModalPlayerTitle");
 
 const totalStartingCardHand = 5;
 
@@ -108,6 +109,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     var elToggleVisibilityButton = document.createElement("button");
     elToggleVisibilityButton.textContent = "Hide";
     elToggleVisibilityButton.addEventListener('click', function(){
+        //Toggles a players hand and details
         ToggleElementVisibility(elPlayersCardDiv, elToggleVisibilityButton);
     }, false);
     elPlayerDiv.appendChild(elToggleVisibilityButton)
@@ -123,6 +125,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elDrawCardButton.textContent = "Draw Card";
 
     elDrawCardButton.addEventListener('click', function() {
+        //Draws a card for a player
         objCardManager.drawCard(lngPlayerNumber);
         RedrawCards(true, true, objCardManager);
     }, false);
@@ -135,8 +138,24 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elStealCardButton.textContent = "Steal Card";
 
     elStealCardButton.addEventListener('click', function() {
-        //TODO probably need to use lngPlayerNumber to hide the current player from the list of options to steal from
+        //Shows the stealing modal with players available to steal from
         elStealModal.style.display = "inline";
+        elStealModalPlayerTitle.innerText = strName;
+        
+        //Hide the player who opened the steal list as an available target
+        for (var iPlayerName = 0; iPlayerName < elStealPlayerModal.children.length; iPlayerName++)
+        {   
+            if (iPlayerName === lngPlayerNumber)
+                {
+                    elStealPlayerModal.children[iPlayerName].style.display = "none";
+                }else{
+                    console.log(strName + " can steal from player: " + iPlayerName + ": " + elStealPlayerModal.children[iPlayerName].innerText);
+                elStealPlayerModal.children[iPlayerName].style.display = "block";
+            }
+        }
+
+        // RedrawCards(true, false, objCardManager);
+
     }, false);
 
     elPlayerDiv.appendChild(elStealCardButton);
@@ -147,9 +166,23 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elStealFromPlayerName.classList.add(strStealModalPlayerName);
     elStealPlayerModal.appendChild(elStealFromPlayerName);
     
-    elStealFromPlayerName.addEventListener('click' ,function(){
-        //TODO need a way to get the current player......
-        objCardManager.stealCard(0, lngPlayerNumber);
+    elStealFromPlayerName.addEventListener('click' ,function(event){
+        //Steals a card and sends them back to the current player
+        //TODO need to find out who the current player is. which is after this function is created
+        
+        //TODO This will work since unique names will be enforced. But look for a more elegant solution
+        //Find out which player
+        let clickedElement = event.target;
+        let strVictimPlayersName = clickedElement.innerText;
+        let iVictimPlayer = objCardManager.findPlayerByName(strVictimPlayersName);
+
+        let iThiefPlayer = 0;
+        
+        console.log("0 Dan is stealing from " + strVictimPlayersName + ": " + iVictimPlayer);
+
+        //TODO the problem is this function is created when the button is. But it needs to know once the button is clicked who the current player is, so it cant be preset
+        objCardManager.stealCard(iThiefPlayer, iVictimPlayer);
+        //We really need a state machine
         RedrawCards(true, false, objCardManager);
     }, false);
 
@@ -165,7 +198,6 @@ function AddPlayerUI(strName, lngPlayerNumber)
 
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
 {
-    console.log("Trying to build card number: " + iCard);
     var newCardListItem = document.createElement("p");
     newCardListItem.textContent = iCard +". " + objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
     return newCardListItem;

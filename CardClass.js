@@ -85,7 +85,7 @@ class PlayerData{
 
     addPlayer(strPlayerName){
 
-        if (strPlayerName == "") throw new error("Adding a new player name cannot be empty");
+        if (strPlayerName == "") throw new Error("Adding a new player name cannot be empty");
         // TODO should check if the name is already used 
 
         this.playerList.push(new PlayerData(strPlayerName))
@@ -108,6 +108,17 @@ class PlayerData{
     getCurrentPlayer()
     {
         return this.iCurrentPlayer;
+    }
+
+    findPlayerByName(strName)
+    {
+        for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
+            if (this.playerList[iPlayer].name === strName){
+                // console.log("Found [" + strName + ": " + iPlayer + "] in findPlayerByName");
+                return iPlayer;
+            }
+        }
+        throw new Error("Failed to find player [" + strName + "] in the player list");
     }
 
     shuffleDeck(){
@@ -136,6 +147,9 @@ class PlayerData{
 
     stealCard(iPlayerThief, iPlayerVictim){
         //Getting a random card from victim
+        if (this.playerList[iPlayerVictim].playersHand.length === 0) {
+            throw new Error("Cannot steal from target player [" + iPlayerVictim + "] who doesnt have any more cards" );
+        }
         const j = randomInt(this.playerList[iPlayerVictim].playersHand.length);
         var objStolenCard =  this.playerList[iPlayerVictim].playersHand.splice(j, 1)[0];
         this.playerList[iPlayerThief].addCardToHand(objStolenCard);
@@ -174,7 +188,7 @@ class PlayerData{
         var totalCardsToDeal = this.playerList.length * this.playerStartHandCount;
         console.log("Total cards to deal: " + totalCardsToDeal);
 
-        if (totalCardsToDeal > this.deckCardList.length) throw new error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
+        if (totalCardsToDeal > this.deckCardList.length) throw new Error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
 
         for(var iPlayer = 0; iPlayer < this.playerList.length; iPlayer++)
         {
