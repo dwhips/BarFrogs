@@ -107,6 +107,7 @@ class PlayerData{
 
     getCurrentPlayer()
     {
+        console.log("Getting current player: " + this.iCurrentPlayer);
         return this.iCurrentPlayer;
     }
 
@@ -163,6 +164,14 @@ class PlayerData{
 
         //Dealing cards to players
         this.initialDeal();
+    }
+
+    nextPlayer(){
+        this.iCurrentPlayer++;
+        if (this.iCurrentPlayer >= this.getTotalPlayers())
+        {
+            this.iCurrentPlayer = 0;
+        }
     }
 
     initialDeal()

@@ -188,14 +188,28 @@ function AddPlayerUI(strName, lngPlayerNumber)
         RedrawCards(true, false, objCardManager);
     }, false);
 
+    //=============== End Turn
+    var elNextPlayerButton = document.createElement("button");
+    elNextPlayerButton.textContent = "End Turn";
+    elNextPlayerButton.classList.add("NextPlayerButton");
+    elPlayerDiv.appendChild(elNextPlayerButton);
+
+    elNextPlayerButton.addEventListener('click', function(){
+        console.log("Ending turn for player[" + objCardManager.getCurrentPlayer() + "]");
+        objCardManager.nextPlayer();
+        
+        RedrawCards(true, false, objCardManager);
+    }, false);
+
     //Adding div for player cards
-    //This relys on RedrawCards to add all of the card elements to this
     
     //Adding card list to the player div
     elPlayerDiv.appendChild(elPlayersCardDiv);
     
     //Adding new player div to doc
     elPlayerBody.appendChild(elPlayerDiv);
+
+    //This relys on RedrawCards to add all of the card elements to this
 }
 
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
@@ -236,18 +250,27 @@ function RedrawCards(redrawPlayerList,
         const elPlayersCardDivList = document.querySelectorAll("." + strPlayersCardDivClass);
         var listPlayers = objCardManager.playerList
         
-        
         //Redrawing player hands
-
-        // Iterate over the elements
-        //TODO this might not be safe it its out of sync with i player
         var iPlayer = 0;
         elPlayersCardDivList.forEach(elPlayersCardDiv => {
-            DeleteChildrenElements(elPlayersCardDiv);
+            var elPlayersDiv = GetPlayerDivElementByNumber(iPlayer);
 
-            var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
-            for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
-                elPlayersCardDiv.appendChild(CreatePlayerCardUI(listPlayerCards, iPlayersCard));
+
+            if (iPlayer === objCardManager.getCurrentPlayer())
+            {
+                //Redrawing hand for current player
+                DeleteChildrenElements(elPlayersCardDiv);
+                
+                var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
+                for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
+                    elPlayersCardDiv.appendChild(CreatePlayerCardUI(listPlayerCards, iPlayersCard));
+                }
+                
+                //Making sure player div is visible
+                elPlayersDiv.style.display = "block";
+            }else{
+                //Hiding divs for the other players
+                elPlayersDiv.style.display = "none";
             }
             iPlayer++;
         });
@@ -271,4 +294,18 @@ function ToggleElementVisibility(objHtmlElement, objButtonElement) {
         objHtmlElement.style.display = "none";
         objButtonElement.textContent = "Show";
     }
-  }
+}
+
+function GetPlayerDivElementByNumber(iGetPlayer)
+{
+    var elPlayerDivs = document.querySelectorAll("."+strPlayerDivClass);
+    
+    for(iPlayer = 0; iPlayer < elPlayerDivs.length; iPlayer++)
+    {
+        if (iPlayer === iGetPlayer)
+        {
+            return elPlayerDivs[iPlayer];
+        }
+    }
+    throw new Error("Could not find a player div for player: " + iGetPlayer + ". Only " + elPlayerDivs.length + "Players are available.");
+}
