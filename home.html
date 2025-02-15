@@ -32,16 +32,6 @@
         </section>
 
         <section>
-            <!-- Trying to get the stealing div to work -->
-             <div class = "Modal" id="StealModalContainer">
-                <h3><span id="StealModalPlayerTitle"></span>: Choose a player to steal a card from</h3>
-                <div id="StealModalPlayerContainer"></div>
-                <!-- TODO build all the other players to steal from in js-->
-                 <button id="StealModalCloseButton">Close</button>
-             </div>
-        </section>
-
-        <section>
             <!-- Game -->
              <div id="GameControlsHeader">
                 <b>Game generic buttons</b>
@@ -52,6 +42,14 @@
 
                 <p>Remaining cards in Deck: <span id="totalDeckCards"></span></p> 
             </div>
+
+            <section>
+                <div class = "Modal" id="StealModalContainer">
+                   <h3><span id="StealModalPlayerTitle"></span>: Choose a player to steal a card from</h3>
+                   <div id="StealModalPlayerContainer"></div>
+                    <button id="StealModalCloseButton">Close</button>
+                </div>
+           </section>
 
             <div id="GameControlBody">
                 <div id="PlayersBody"></div>

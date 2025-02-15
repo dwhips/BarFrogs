@@ -41,7 +41,7 @@ InitUI(objCardManager);
 //=---------------------Element Listeners-----------------------------
 elButtonShuffle.addEventListener("click", function(){
     objCardManager.shuffleDeck();
-    RedrawCards(false, true, objCardManager);
+    RedrawCardsAndPlayersUI(false, true, objCardManager);
 }, false);
 
 elAddPlayerButton.addEventListener("click", function () {
@@ -52,7 +52,7 @@ elAddPlayerButton.addEventListener("click", function () {
     //Where the game is actually being played. Don't need to rework how cards are dealt yet.
     AddPlayerUI(elAddPlayerTextField.value, objCardManager.getTotalPlayers() - 1);
     
-    RedrawCards(true, true, objCardManager);
+    RedrawCardsAndPlayersUI(true, true, objCardManager);
 }, false);
 
 elStealModalCloseButton.addEventListener("click", function() {
@@ -90,7 +90,7 @@ function InitUI(objCardManager)
         AddPlayerUI(listPlayers[iPlayer].getName(), iPlayer);
     }
 
-    RedrawCards(true, true, objCardManager);
+    RedrawCardsAndPlayersUI(true, true, objCardManager);
 }
 
 function AddPlayerUI(strName, lngPlayerNumber)
@@ -129,7 +129,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elDrawCardButton.addEventListener('click', function() {
         //Draws a card for a player
         objCardManager.drawCard(lngPlayerNumber);
-        RedrawCards(true, true, objCardManager);
+        RedrawCardsAndPlayersUI(true, true, objCardManager);
     }, false);
 
     elPlayerDiv.appendChild(elDrawCardButton);
@@ -141,22 +141,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
 
     elStealCardButton.addEventListener('click', function() {
         //Shows the stealing modal with players available to steal from
-        elStealModal.style.display = "inline";
-        elStealModalPlayerTitle.innerText = strName;
-        
-        //Hide the player who opened the steal list as an available target
-        for (var iPlayerName = 0; iPlayerName < elStealPlayerModal.children.length; iPlayerName++)
-        {   
-            if (iPlayerName === lngPlayerNumber)
-                {
-                    elStealPlayerModal.children[iPlayerName].style.display = "none";
-                }else{
-                    console.log(strName + " can steal from player: " + iPlayerName + ": " + elStealPlayerModal.children[iPlayerName].innerText);
-                elStealPlayerModal.children[iPlayerName].style.display = "block";
-            }
-        }
-
-        // RedrawCards(true, false, objCardManager);
+        RedrawStealModalUI(strName,lngPlayerNumber,false);
 
     }, false);
 
@@ -170,22 +155,18 @@ function AddPlayerUI(strName, lngPlayerNumber)
     
     elStealFromPlayerName.addEventListener('click' ,function(event){
         //Steals a card and sends them back to the current player
-        //TODO need to find out who the current player is. which is after this function is created
-        
         //TODO This will work since unique names will be enforced. But look for a more elegant solution
-        //Find out which player
         let clickedElement = event.target;
         let strVictimPlayersName = clickedElement.innerText;
         let iVictimPlayer = objCardManager.findPlayerByName(strVictimPlayersName);
 
-        let iThiefPlayer = 0;
+        let iThiefPlayer = objCardManager.getCurrentPlayer();
         
-        console.log("0 Dan is stealing from " + strVictimPlayersName + ": " + iVictimPlayer);
+        console.log(iThiefPlayer + " is stealing from " + strVictimPlayersName + ": " + iVictimPlayer);
 
-        //TODO the problem is this function is created when the button is. But it needs to know once the button is clicked who the current player is, so it cant be preset
         objCardManager.stealCard(iThiefPlayer, iVictimPlayer);
         //We really need a state machine
-        RedrawCards(true, false, objCardManager);
+        RedrawCardsAndPlayersUI(true, false, objCardManager);
     }, false);
 
     //=============== End Turn
@@ -198,7 +179,9 @@ function AddPlayerUI(strName, lngPlayerNumber)
         console.log("Ending turn for player[" + objCardManager.getCurrentPlayer() + "]");
         objCardManager.nextPlayer();
         
-        RedrawCards(true, false, objCardManager);
+        RedrawStealModalUI("",0,true);
+
+        RedrawCardsAndPlayersUI(true, false, objCardManager);
     }, false);
 
     //Adding div for player cards
@@ -222,7 +205,7 @@ function CreatePlayerCardUI(objPlayersCardHand, iCard)
 
 //Managing how cards are being drawn, this is a refresh UI function to redraw all card componenents for a player vs the deck\
 
-function RedrawCards(redrawPlayerList,
+function RedrawCardsAndPlayersUI(redrawPlayerList,
     redrawDeckList,
     objCardManager
 )
@@ -274,6 +257,32 @@ function RedrawCards(redrawPlayerList,
             }
             iPlayer++;
         });
+    }
+}
+
+function RedrawStealModalUI(strName,
+    iCurrentPlayer,
+    blnCloseModal)
+{
+    if (blnCloseModal){
+        //Hiding the steal player div
+        elStealModal.style.display = "none";
+        return;
+    }
+
+    elStealModal.style.display = "inline";
+    elStealModalPlayerTitle.innerText = strName;
+    
+    //Hide the player who opened the steal list as an available target
+    for (var iPlayerName = 0; iPlayerName < elStealPlayerModal.children.length; iPlayerName++)
+    {   
+        if (iPlayerName === iCurrentPlayer)
+            {
+                elStealPlayerModal.children[iPlayerName].style.display = "none";
+            }else{
+                console.log(strName + " can steal from player: " + iPlayerName + ": " + elStealPlayerModal.children[iPlayerName].innerText);
+            elStealPlayerModal.children[iPlayerName].style.display = "block";
+        }
     }
 }
 
