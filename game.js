@@ -3,6 +3,8 @@ var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
 var elListDeck = document.getElementById("DeckList");
 var elTotalDeckCards = document.getElementById("totalDeckCards");
+var elPlayerNameList = document.getElementById("PlayerNameList");
+const strPlayerListNameElement = "PlayerListNameElement";
 
 var elPlayerBody = document.getElementById("PlayersBody");
 const strPlayerDivClass = "PlayerDiv";
@@ -53,6 +55,10 @@ elAddPlayerButton.addEventListener("click", function () {
     AddPlayerUI(elAddPlayerTextField.value, objCardManager.getTotalPlayers() - 1);
     
     RedrawCardsAndPlayersUI(true, true, objCardManager);
+
+    RedrawPlayerNameListUI();
+
+    elAddPlayerTextField.value = "";
 }, false);
 
 elStealModalCloseButton.addEventListener("click", function() {
@@ -79,6 +85,10 @@ function GenerateCards(objCards)
     // -- Stealing cards
     objCards.addNewCard("Steal", "Take a random card from a player of your choice", 4);
     objCards.addNewCard("Baron", "Take a random card from every other player", 2);
+
+    // -- End Game Cards
+    objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1)
+    objCards.addNewCard("Lucky Frog", "You win if you have this card at the end of the game.", 1)
 }
 
 //Adds buttons, cards, etc for each player and stores them in the element list
@@ -91,6 +101,8 @@ function InitUI(objCardManager)
     }
 
     RedrawCardsAndPlayersUI(true, true, objCardManager);
+
+    RedrawPlayerNameListUI();
 }
 
 function AddPlayerUI(strName, lngPlayerNumber)
@@ -177,6 +189,8 @@ function AddPlayerUI(strName, lngPlayerNumber)
         RedrawStealModalUI("",0,true);
 
         RedrawCardsAndPlayersUI(true, false, objCardManager);
+
+        RedrawPlayerNameListUI();
     }, false);
 
     //Adding div for player cards
@@ -278,6 +292,25 @@ function RedrawStealModalUI(strName,
                 console.log(strName + " can steal from player: " + iPlayerName + ": " + elStealPlayerModal.children[iPlayerName].innerText);
             elStealPlayerModal.children[iPlayerName].style.display = "block";
         }
+    }
+}
+
+function RedrawPlayerNameListUI()
+{
+    DeleteChildrenElements(elPlayerNameList);
+    
+    for (iPlayer = 0; iPlayer < objCardManager.getTotalPlayers(); iPlayer++){
+        var elPlayerName = document.createElement("li");
+        elPlayerName.classList.add(strPlayerListNameElement);
+
+        let strNameText = objCardManager.getPlayerNameByIndex(iPlayer);
+        if (iPlayer === objCardManager.getCurrentPlayer()) 
+        {
+            strNameText += " *";
+        }
+
+        elPlayerName.textContent = strNameText;
+        elPlayerNameList.appendChild(elPlayerName);
     }
 }
 

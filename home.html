@@ -20,27 +20,28 @@
             </header>
 
             <ol>
-                <li> with 5-10 ish cards per person (shuffle the black out card in?)</li>
-	            <li>At the start of your turn draw a card or steal from any opponent</li>
-		        <li>If the deck is empty, you must steal instead of drawing.</li>
-	            <li>*Ideally you can play as many cards from your hand, but how do you stop a player from playing out their hand.</li>
-                <ul><li>Make some cards responsive (counter), possibly some cards require 2 to activate.</li>
-                </ul>
-		        <li>Game cant end until the draw pile is empty?</li>
-	            <li>Play until you have no cards left, or until you are the last player remaining.</li>
+	            <li>Draw or steal a card at the start of your turn.</li>
+		        <!-- <ul><li>If the deck is empty, you must steal instead of drawing.</li></ul> -->
+                <li>Play the cards in your hand during your turn.</li>
+                <ul><li>There isn't a limit to the number of cards you can play. You do not have to play any cards during your turn.</li></ul>
+	            <li>Once your turn is over the next player's turn begins.</li>
+                <li>The game ends once the deck is empty.</li>
+                <!-- <li>The final rounds starts if the deck is empty at the beginning of a players turn. Every player gets one turn to play cards in their hand.</li> -->
+                 <li>The player with the 'Lucky Frog' card at the end of the game wins.</li>
+                 <li>The player with the 'Blackout' card at the end of the game loses.</li>
             </ol>
         </section>
 
         <section>
             <!-- Game -->
              <div id="GameControlsHeader">
-                <b>Game generic buttons</b>
-                <button id="ShuffleDeckButton" type="button">Shuffle Deck</button>
                 
                 <input id="AddPlayerTextField"></input>
                 <button id="AddPlayerButton" type="button">Add Player</button>
-
+                <ul id="PlayerNameList">Player's</ul>
+                
                 <p>Remaining cards in Deck: <span id="totalDeckCards"></span></p> 
+                <button id="ShuffleDeckButton" type="button">Shuffle Deck</button>
             </div>
 
             <section>

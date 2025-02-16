@@ -122,6 +122,16 @@ class PlayerData{
         throw new Error("Failed to find player [" + strName + "] in the player list");
     }
 
+    getPlayerNameByIndex(iFindPlayer)
+    {
+        for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
+            if (iPlayer === iFindPlayer){
+                return this.playerList[iPlayer].name;
+            }
+        }
+        throw new Error("Failed to find player [" + iFindPlayer + "] in the player list. List size: " + this.playerList.length);
+    }
+
     shuffleDeck(){
         shuffleArray(this.deckCardList);
     }
