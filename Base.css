@@ -1,14 +1,9 @@
-.PlayerDiv{
-    outline-style: solid;
-    padding: 10px;
+.PlayerName{
+    font-weight: bold;
 }
 
 #StealModalContainer{
     display: none;
-}
-
-section{
-    border: solid;
 }
 
 .StealModalPlayerName:hover{

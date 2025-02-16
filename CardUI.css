@@ -1,0 +1,27 @@
+.PlayersCardContainer{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    margin-top: 20px;
+
+    background-color: white;
+  }
+
+  .PlayerCardDiv{    
+    width: 250px;
+    height: 400px;
+
+    outline-style: solid;
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+.PlayerCardDiv:hover{
+    outline-style: solid;
+    outline-color: red;
+}
+
+  .PlayerCardTitle{
+    font-weight: bold;
+  }

@@ -10,7 +10,13 @@ var elPlayerBody = document.getElementById("PlayersBody");
 const strPlayerDivClass = "PlayerDiv";
 const strPlayerNameClass = "PlayerName";
 const strPlayerNumberClass = "PlayerNumber";
-const strPlayersCardDivClass = "PlayersCardDiv";
+const strPlayersCardContainerClass = "PlayersCardContainer";
+
+//Card html
+const strPlayerCardDivClass = "PlayerCardDiv";
+const strPlayerCardTitleClass = "PlayerCardTitle";
+const strPlayerCardDescriptionTextClass = "PlayerCardDescriptionText";
+
 const strStealModalPlayerName = "StealModalPlayerName";
 
 var elAddPlayerButton = document.getElementById("AddPlayerButton");
@@ -107,24 +113,24 @@ function InitUI(objCardManager)
 
 function AddPlayerUI(strName, lngPlayerNumber)
 {
-    //Creating base player UI
+    //================Creating base player UI
     var elPlayerDiv = document.createElement("div");
     elPlayerDiv.classList.add(strPlayerDivClass);
 
-    var elPlayersCardDiv = document.createElement("div");
-    elPlayersCardDiv.classList.add(strPlayersCardDivClass);
-    
+    var elPlayersCardContainer = document.createElement("div");
+    elPlayersCardContainer.classList.add(strPlayersCardContainerClass);
+
     var elPlayerName = document.createElement("p");
     elPlayerName.textContent = strName;
     elPlayerName.classList.add(strPlayerNameClass)
     elPlayerDiv.appendChild(elPlayerName)
 
-    //Creating base player buttons
+    //===============Creating base player buttons
     var elToggleVisibilityButton = document.createElement("button");
     elToggleVisibilityButton.textContent = "Hide";
     elToggleVisibilityButton.addEventListener('click', function(){
         //Toggles a players hand and details
-        ToggleElementVisibility(elPlayersCardDiv, elToggleVisibilityButton);
+        ToggleElementVisibility(elPlayersCardContainer, elToggleVisibilityButton);
     }, false);
     elPlayerDiv.appendChild(elToggleVisibilityButton)
 
@@ -196,20 +202,36 @@ function AddPlayerUI(strName, lngPlayerNumber)
     //Adding div for player cards
     
     //Adding card list to the player div
-    elPlayerDiv.appendChild(elPlayersCardDiv);
+    elPlayerDiv.appendChild(elPlayersCardContainer);
     
     //Adding new player div to doc
     elPlayerBody.appendChild(elPlayerDiv);
 
-    //This relys on RedrawCards to add all of the card elements to this
+    //This reliess on RedrawCards to add all of the card elements to this
 }
 
 function CreatePlayerCardUI(objPlayersCardHand, iCard)
 {
-    var newCardListItem = document.createElement("p");
-    let strDisplayCardNumber = (iCard + 1).toString();
-    newCardListItem.textContent = objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
-    return newCardListItem;
+    //Creating base card div
+    var newCardDiv = document.createElement("div");
+    newCardDiv.classList.add(strPlayerCardDivClass);
+
+    //Adding title text to the card
+    var cardText = document.createElement("p");
+    cardText.textContent = objPlayersCardHand[iCard]._name();
+    cardText.classList.add(strPlayerCardTitleClass);
+    newCardDiv.appendChild(cardText);
+
+    //Adding card description to the card
+    var cardDescription = document.createElement("p");
+    cardDescription.textContent = objPlayersCardHand[iCard]._details();
+    cardDescription.classList.add(strPlayerCardDescriptionTextClass);
+    newCardDiv.appendChild(cardDescription);
+
+    // var newCardListItem = document.createElement("p");
+    // let strDisplayCardNumber = (iCard + 1).toString();
+    // newCardListItem.textContent = objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
+    return newCardDiv;
 }
 
 //Managing how cards are being drawn, this is a refresh UI function to redraw all card componenents for a player vs the deck\
@@ -239,7 +261,7 @@ function RedrawCardsAndPlayersUI(redrawPlayerList,
     }
         
     if (redrawPlayerList){
-        const elPlayersCardDivList = document.querySelectorAll("." + strPlayersCardDivClass);
+        const elPlayersCardDivList = document.querySelectorAll("." + strPlayersCardContainerClass);
         var listPlayers = objCardManager.playerList
         
         //Redrawing player hands
