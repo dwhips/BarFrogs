@@ -85,6 +85,12 @@ class PlayerData{
             card.printDetails();
         });
     }
+
+    playiCard(iCard){
+        //Sending card to the players table hand
+        let objCardData = this.playersHand.splice(iCard, 1)[0];
+        this.playersTableHand.push(objCardData);
+    }
 }
 
  class CardManager{

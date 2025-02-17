@@ -270,7 +270,7 @@ function RedrawCardsAndPlayersUI(redrawPlayerList,
                 for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
                     let objPlayerCardDiv = CreatePlayerCardUI(listPlayerCards, iPlayersCard);
                     elPlayersCardDiv.appendChild(objPlayerCardDiv);
-                    AddCardClickEvent(objPlayerCardDiv, listPlayerCards[iPlayersCard]);
+                    AddCardClickEvent(objPlayerCardDiv, listPlayers[iPlayer], iPlayersCard);
                 }
                 
                 //Making sure player div is visible
@@ -330,9 +330,13 @@ function RedrawPlayerNameListUI()
 }
 
 //Effect Functions
-function AddCardClickEvent(objCardDivElement, objCardData)
+function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
 {
-    objCardDivElement.addEventListener('click', function(){
+    //Getting card data from the player obj
+    let objCardData = objPlayer.getPlayersHand()[iCard];
+
+    objCardDivElement.addEventListener('click', function()
+    {
         let iCurrentPlayer = objCardManager.getCurrentPlayer();
         let strCurrentName = objCardManager.getPlayerNameByIndex(iCurrentPlayer);
 
@@ -353,7 +357,11 @@ function AddCardClickEvent(objCardDivElement, objCardData)
             console.log("Triggering the steal cards effect for card: " + objCardData._name());
             RedrawStealModalUI(strCurrentName, iCurrentPlayer, false);
         }
-        
+
+        //Moving card from hand to table
+        objPlayer.playiCard(iCard);
+
+        RedrawCardsAndPlayersUI(true, false, objCardManager);
     }, false);
 }
 
