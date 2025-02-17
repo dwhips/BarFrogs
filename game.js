@@ -92,8 +92,8 @@ function GenerateCards(objCards)
     objCards.addNewCard("Baron", "Steal a random card from every other player", 2, 1, 0);
 
     // -- End Game Cards
-    objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1)
-    objCards.addNewCard("Lucky Frog", "You win if you have this card at the end of the game.", 1)
+    objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1, 0, 0, true);
+    objCards.addNewCard("Lucky Frog", "You win if you have this card at the end of the game.", 1, 0, 0, true);
 }
 
 //Adds buttons, cards, etc for each player and stores them in the element list
@@ -334,6 +334,8 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
 {
     //Getting card data from the player obj
     let objCardData = objPlayer.getPlayersHand()[iCard];
+
+    if (objCardData._isPlayDisabled()) return;
 
     objCardDivElement.addEventListener('click', function()
     {

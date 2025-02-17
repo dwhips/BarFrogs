@@ -9,11 +9,7 @@
     //Card Effect Properties
     totalStealCards = 0;
     totalDrawCards = 0;
-    //TODO need other properties about the card specifics (draw from deck, steal card, drink, etc). Need to break apart card functionality into the card contructor
-    //Properties would best be setup like
-    //this.TotalDrawCount >> Normally 0, but if set then draw one card.
-    //this.TotalStealCard >> 0 - x, steal x cards (then a bool to see if you can steal from multiple players)
-//And all of this would be evaluated on the cards Play() function to know what to do.
+    isPlayDisabled = false;
 
     constructor(strName, strDetails)
     {
@@ -27,6 +23,7 @@
     _details(){return this.details;}
     _totalStealCards(){return this.totalStealCards;}
     _totalDrawCards(){return this.totalDrawCards;}
+    _isPlayDisabled(){return this.isPlayDisabled};
 
     setPicture(strPictureLink){
         this.pictureLink = strPictureLink;
@@ -38,6 +35,11 @@
 
     SetDrawCards(lngTotalDrawCards){
         this.totalDrawCards = lngTotalDrawCards;
+    }
+
+    DisableCardPlay()
+    {
+        this.isPlayDisabled = true;
     }
 
     printDetails()
@@ -113,7 +115,12 @@ class PlayerData{
         this.playerList.push(new PlayerData(strPlayerName))
     }
 
-    addNewCard(strName, strDetails, count, totalStealCards = 0, totalDrawCards = 0)
+    addNewCard(strName, 
+        strDetails, 
+        count, 
+        totalStealCards = 0, 
+        totalDrawCards = 0,
+        isDisabledPlay = false)
     {
         for (let i = 0; i < count; i++)
         {
@@ -121,9 +128,9 @@ class PlayerData{
             let objCardData = new CardData(strName, strDetails);
             objCardData.SetDrawCards(totalDrawCards);
             objCardData.SetStealCards(totalStealCards);
+            if(isDisabledPlay) objCardData.DisableCardPlay();
 
             this.deckCardList.push(objCardData);
-
         }
     }
 
