@@ -130,7 +130,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elToggleVisibilityButton.textContent = "Hide";
     elToggleVisibilityButton.addEventListener('click', function(){
         //Toggles a players hand and details
-        ToggleElementVisibility(elPlayersCardContainer, elToggleVisibilityButton);
+        ToggleElementVisibility(elPlayersCardContainer, elToggleVisibilityButton, "flex");
     }, false);
     elPlayerDiv.appendChild(elToggleVisibilityButton)
 
@@ -345,9 +345,9 @@ function DeleteChildrenElements(parentElement)
     }
 }
 
-function ToggleElementVisibility(objHtmlElement, objButtonElement) {
+function ToggleElementVisibility(objHtmlElement, objButtonElement, strDisplayShow) {
     if (objHtmlElement.style.display === "none") {
-        objHtmlElement.style.display = "block";
+        objHtmlElement.style.display = strDisplayShow;
         objButtonElement.textContent = "Hide";
     } else {
         objHtmlElement.style.display = "none";
