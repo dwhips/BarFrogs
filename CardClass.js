@@ -5,6 +5,10 @@
     name;
     details;
     pictureLink;
+
+    //Card Effect Properties
+    totalStealCards = 0;
+    totalDrawCards = 0;
     //TODO need other properties about the card specifics (draw from deck, steal card, drink, etc). Need to break apart card functionality into the card contructor
     //Properties would best be setup like
     //this.TotalDrawCount >> Normally 0, but if set then draw one card.
@@ -20,10 +24,20 @@
 
     //TODO make all class getters have this _ bit for standards
     _name() {return this.name;}
-    _details(){return this.details}
+    _details(){return this.details;}
+    _totalStealCards(){return this.totalStealCards;}
+    _totalDrawCards(){return this.totalDrawCards;}
 
     setPicture(strPictureLink){
         this.pictureLink = strPictureLink;
+    }
+
+    SetStealCards(nTotalStealCards){
+        this.totalStealCards = nTotalStealCards;
+    }
+
+    SetDrawCards(lngTotalDrawCards){
+        this.totalDrawCards = lngTotalDrawCards;
     }
 
     printDetails()
@@ -57,9 +71,11 @@ class PlayerData{
         this.playersHand.push(objCard);
     }
 
-    playCard()
-    {
-        //TODO Need a way for the html page to tell this class which card in the hand to sent to playersHand[]
+    iGetCard(iCard){
+        if (iCard < 1) return;
+        if (this.playersHand.length < iCard) throw new Error("Cannot get [" + iCard + "] from the players hand: " + this.playersHand.length);
+
+        return this.playersHand[iCard];
     }
 
     printPlayerCardList()
@@ -91,13 +107,17 @@ class PlayerData{
         this.playerList.push(new PlayerData(strPlayerName))
     }
 
-    addNewCard(strName, strDetails, count){
-        //loop count times, add to a list
-        var i;
-        for (i = 0; i < count; i++)
+    addNewCard(strName, strDetails, count, totalStealCards = 0, totalDrawCards = 0)
+    {
+        for (let i = 0; i < count; i++)
         {
             // console.log("I am adding a card" + strName + ": #" + count)
-            this.deckCardList.push(new CardData(strName, strDetails));
+            let objCardData = new CardData(strName, strDetails);
+            objCardData.SetDrawCards(totalDrawCards);
+            objCardData.SetStealCards(totalStealCards);
+
+            this.deckCardList.push(objCardData);
+
         }
     }
 

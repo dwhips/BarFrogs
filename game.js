@@ -74,8 +74,6 @@ elStealModalCloseButton.addEventListener("click", function() {
 //=----------------------Card Functions-------------------------------
 function GenerateCards(objCards)
 {
-    objCards.addNewCard("Sleep", "You can take a nap", 5);
-    objCards.addNewCard("Firebolt", "Do 5 damage", 5);
     objCards.addNewCard("Drink", "Drink up!", 5);
     // -- Drink Punishing Cards
     //A curse card that be moved around, makes a player drink twice. You can stack curses on one player, playing curses on a new target removes all active curses.
@@ -86,11 +84,12 @@ function GenerateCards(objCards)
     objCards.addNewCard("Protect", "Play this card to stop any drinking effect.", 5);
 
     // -- Drawing Cards
-    objCards.addNewCard("Gambler", "Place any number of cards from your hand into the deck. Draw the same number of cards. Shuffle", 2);
+    objCards.addNewCard("Jumpy Frog", "Draw 2 Cards", 5, 0, 2);
+    objCards.addNewCard("Gambler", "Place any number of cards from your hand into the deck. Draw the same number of cards. Shuffle", 2, 0, 1);
 
     // -- Stealing cards
-    objCards.addNewCard("Steal", "Take a random card from a player of your choice", 4);
-    objCards.addNewCard("Baron", "Take a random card from every other player", 2);
+    objCards.addNewCard("Steal", "Steal a random card from a player of your choice", 4, 1, 0);
+    objCards.addNewCard("Baron", "Steal a random card from every other player", 2, 1, 0);
 
     // -- End Game Cards
     objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1)
@@ -139,9 +138,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elDrawCardButton.textContent = "Draw Card";
 
     elDrawCardButton.addEventListener('click', function() {
-        //Draws a card for a player
-        objCardManager.drawCard(lngPlayerNumber);
-        RedrawCardsAndPlayersUI(true, true, objCardManager);
+        DrawCard(lngPlayerNumber);
     }, false);
 
     elPlayerDiv.appendChild(elDrawCardButton);
@@ -227,15 +224,10 @@ function CreatePlayerCardUI(objPlayersCardHand, iCard)
     cardDescription.textContent = objPlayersCardHand[iCard]._details();
     cardDescription.classList.add(strPlayerCardDescriptionTextClass);
     newCardDiv.appendChild(cardDescription);
-
-    // var newCardListItem = document.createElement("p");
-    // let strDisplayCardNumber = (iCard + 1).toString();
-    // newCardListItem.textContent = objPlayersCardHand[iCard]._name() + ": "+ objPlayersCardHand[iCard]._details();
     return newCardDiv;
 }
 
 //Managing how cards are being drawn, this is a refresh UI function to redraw all card componenents for a player vs the deck\
-
 function RedrawCardsAndPlayersUI(redrawPlayerList,
     redrawDeckList,
     objCardManager
@@ -261,14 +253,13 @@ function RedrawCardsAndPlayersUI(redrawPlayerList,
     }
         
     if (redrawPlayerList){
-        const elPlayersCardDivList = document.querySelectorAll("." + strPlayersCardContainerClass);
+        const elPlayersCardContainer = document.querySelectorAll("." + strPlayersCardContainerClass);
         var listPlayers = objCardManager.playerList
         
         //Redrawing player hands
         var iPlayer = 0;
-        elPlayersCardDivList.forEach(elPlayersCardDiv => {
+        elPlayersCardContainer.forEach(elPlayersCardDiv => {
             var elPlayersDiv = GetPlayerDivElementByNumber(iPlayer);
-
 
             if (iPlayer === objCardManager.getCurrentPlayer())
             {
@@ -277,7 +268,9 @@ function RedrawCardsAndPlayersUI(redrawPlayerList,
                 
                 var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
                 for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
-                    elPlayersCardDiv.appendChild(CreatePlayerCardUI(listPlayerCards, iPlayersCard));
+                    let objPlayerCardDiv = CreatePlayerCardUI(listPlayerCards, iPlayersCard);
+                    elPlayersCardDiv.appendChild(objPlayerCardDiv);
+                    AddCardClickEvent(objPlayerCardDiv, listPlayerCards[iPlayersCard]);
                 }
                 
                 //Making sure player div is visible
@@ -336,8 +329,41 @@ function RedrawPlayerNameListUI()
     }
 }
 
-//Generic functions
+//Effect Functions
+function AddCardClickEvent(objCardDivElement, objCardData)
+{
+    objCardDivElement.addEventListener('click', function(){
+        let iCurrentPlayer = objCardManager.getCurrentPlayer();
+        let strCurrentName = objCardManager.getPlayerNameByIndex(iCurrentPlayer);
 
+        if (objCardData._totalDrawCards() > 0)
+        {
+            //Triggering draw effect
+            for(let i = 0; i < objCardData._totalDrawCards(); i++)
+            {
+                DrawCard(iCurrentPlayer);
+            }
+        }
+
+        if (objCardData._totalStealCards() > 0)
+        {
+            //Triggering steal effect
+            //TODO need to support the modal having a total amount of tries
+            //TODO need to make modal generic, and support multiple interactions (make it a generic player list modal function)
+            console.log("Triggering the steal cards effect for card: " + objCardData._name());
+            RedrawStealModalUI(strCurrentName, iCurrentPlayer, false);
+        }
+        
+    }, false);
+}
+
+function DrawCard(iPlayerNumber) {
+    //Draws a card for a player
+    objCardManager.drawCard(iPlayerNumber);
+    RedrawCardsAndPlayersUI(true, true, objCardManager);
+}
+
+//Generic functions
 function DeleteChildrenElements(parentElement)
 {
     while (parentElement.firstChild) {
