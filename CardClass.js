@@ -108,7 +108,6 @@ class PlayerData{
     }
 
     addPlayer(strPlayerName){
-
         if (strPlayerName == "") throw new Error("Adding a new player name cannot be empty");
         // TODO should check if the name is already used 
 
@@ -197,7 +196,6 @@ class PlayerData{
         const j = randomInt(this.playerList[iPlayerVictim].playersHand.length);
         var objStolenCard =  this.playerList[iPlayerVictim].playersHand.splice(j, 1)[0];
         this.playerList[iPlayerThief].addCardToHand(objStolenCard);
-        
     }
 
     startGame(){
@@ -230,7 +228,6 @@ class PlayerData{
             {
                 this.drawCard(iPlayer);
             }
-            // this.playerList[iPlayer].printPlayerCardList();
         }
     }
  }
