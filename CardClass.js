@@ -10,6 +10,7 @@
     totalStealCards = 0;
     totalDrawCards = 0;
     isPlayDisabled = false;
+    isSelectable = false;
 
     constructor(strName, strDetails)
     {
@@ -24,24 +25,30 @@
     _totalStealCards(){return this.totalStealCards;}
     _totalDrawCards(){return this.totalDrawCards;}
     _isPlayDisabled(){return this.isPlayDisabled};
+    _isSelectable(){return this.isSelectable;}
 
     setPicture(strPictureLink){
         this.pictureLink = strPictureLink;
     }
 
+    //Card action types
     SetStealCards(nTotalStealCards){
         this.totalStealCards = nTotalStealCards;
+        if (nTotalStealCards !== 0) this.isSelectable = true;
     }
 
-    SetDrawCards(lngTotalDrawCards){
-        this.totalDrawCards = lngTotalDrawCards;
+    SetDrawCards(nTotalDrawCards){
+        this.totalDrawCards = nTotalDrawCards;
+        if (nTotalDrawCards !== 0) this.isSelectable = true;
     }
 
     DisableCardPlay()
     {
         this.isPlayDisabled = true;
+        //This should set this.isSelectable = false, but this might have conflicts with other card properties. 
     }
 
+    //Debugging support
     printDetails()
     {
         console.log("card name: " + this.name);

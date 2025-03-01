@@ -224,6 +224,15 @@ function CreatePlayerCardUI(objPlayersCardHand, iCard)
     cardDescription.textContent = objPlayersCardHand[iCard]._details();
     cardDescription.classList.add(strPlayerCardDescriptionTextClass);
     newCardDiv.appendChild(cardDescription);
+
+    //Checking if the card can be selected
+    if (objPlayersCardHand[iCard]._isSelectable())
+    {
+       newCardDiv.style.outlineColor = 'red'; 
+    } else {
+        newCardDiv.style.outlineColor = 'gray';
+    } 
+
     return newCardDiv;
 }
 
@@ -336,6 +345,7 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
     let objCardData = objPlayer.getPlayersHand()[iCard];
 
     if (objCardData._isPlayDisabled()) return;
+    if (!objCardData._isSelectable()) return;
 
     objCardDivElement.addEventListener('click', function()
     {

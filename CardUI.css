@@ -12,14 +12,14 @@
     width: 250px;
     height: 400px;
 
-    outline-style: solid;
+    border: solid;
     padding: 10px;
     margin: 10px auto;
   }
 
 .PlayerCardDiv:hover{
+  /* outline color is controlled inside game.js */
     outline-style: solid;
-    outline-color: red;
 }
 
   .PlayerCardTitle{
