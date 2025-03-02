@@ -17,16 +17,18 @@ const strPlayerCardDivClass = "PlayerCardDiv";
 const strPlayerCardTitleClass = "PlayerCardTitle";
 const strPlayerCardDescriptionTextClass = "PlayerCardDescriptionText";
 
-const strStealModalPlayerName = "StealModalPlayerName";
 
 var elAddPlayerButton = document.getElementById("AddPlayerButton");
 var elAddPlayerTextField = document.getElementById("AddPlayerTextField");
 
 //Modal Html
+const strStealModalPlayerName = "StealModalPlayerName";
+
 var elModalContainer = document.getElementById("ModalContainer");
 var elModalListContainer = document.getElementById("ModalListContainer");
 var elModalCloseButton = document.getElementById("ModalCloseButton");
 var elModalTitle = document.getElementById("ModalTitle");
+var elModalCurrentPlayerName = document.getElementById("ModalCurrentPlayerName");
 
 const totalStartingCardHand = 5;
 
@@ -279,7 +281,10 @@ function RedrawStealModalUI(strName,
     iCurrentPlayer,
     blnCloseModal)
 {
-    if(!InitModalRedraw(blnCloseModal)) return;
+    if(!InitModalRedraw(blnCloseModal), "Choose a player to steal from") return;
+
+    //Setting player title
+    elModalCurrentPlayerName.textContent = strName;
 
     //Hide the player who opened the steal list as an available target
     // for (var iPlayerName = 0; iPlayerName < elModalListContainer.children.length; iPlayerName++)
@@ -326,7 +331,9 @@ function AddStealPlayerElement(strName){
 function RedrawModalCards(iCurrentPlayer,
     blnCloseModal)
 {
-    if(!InitModalRedraw(blnCloseModal)) return;
+    if(!InitModalRedraw(blnCloseModal, "Choose a card to send to a player")) return;
+
+    elModalCurrentPlayerName.textContent = objCardManager.getPlayerNameByIndex(iCurrentPlayer);
 
     //RedrawStealModalUI() only needs to change the player display since players are not added or dopped. Since cards often change, need to redraw them each time the modal loads.
     var listPlayerCards = objCardManager.playerList[iCurrentPlayer].getPlayersHand();
@@ -335,12 +342,14 @@ function RedrawModalCards(iCurrentPlayer,
     {
         var elCard = document.createElement("p");
         elCard.textContent = listPlayerCards[iCard]._name();
+        console.log("Building card gifting list. Adding: " + listPlayerCards[iCard]._name());
         // elCard.classList.add(strPlayerNameClass);
         elModalListContainer.appendChild(elCard);
     }
 }
 
-function InitModalRedraw(blnCloseModal
+function InitModalRedraw(blnCloseModal,
+    strModalTitle = ""
 )
 {
     DeleteChildrenElements(elModalListContainer);
@@ -352,7 +361,7 @@ function InitModalRedraw(blnCloseModal
     }
 
     elModalContainer.style.display = "inline";
-    elModalTitle.innerText = "";
+    elModalTitle.innerText = strModalTitle;
     return true;
 }
 
@@ -398,11 +407,12 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
             }
         }
 
-        //TODO need a way to support stacking events and effects from the modal (EQ stealing and gifting on the same card)
+        //TODO need a way to support stacking events and effects from the modal (EQ stealing and gifting on the same player)
         if (objCardData._totalStealCards() > 0)
         {
             //Triggering steal effect
-            //TODO need to support the modal having a total amount of tries
+            //TODO need to support the modal having a total amount of tries. 
+            //  It should steal n times from a player based on objCardData.nTotalSteals. But also need to handle if the player ran out of cards.... just end it?
             console.log("Triggering the steal cards effect for card: " + objCardData._name());
             RedrawStealModalUI(strCurrentName, iCurrentPlayer, false);
         }
@@ -411,7 +421,7 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
         {
             //Triggering gifting someone cards
             console.log("Triggering the gifting effect for: " + objCardData._name());
-            RedrawModalCards(iCurrentPlayer, elModalContainer, false);
+            RedrawModalCards(iCurrentPlayer, false);
         }
 
         //TODO need some way to only play the card after all events are completed (EG someone cancels stealing)
