@@ -281,7 +281,7 @@ function RedrawStealModalUI(strName,
     iCurrentPlayer,
     blnCloseModal)
 {
-    if(!InitModalRedraw(blnCloseModal), "Choose a player to steal from") return;
+    if(!InitModalRedraw(blnCloseModal, "Choose a player to steal from")) return;
 
     //Setting player title
     elModalCurrentPlayerName.textContent = strName;
