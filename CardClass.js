@@ -9,6 +9,7 @@
     //Card Effect Properties
     totalStealCards = 0;
     totalDrawCards = 0;
+    totalGiftCards = 0;
     isPlayDisabled = false;
     isSelectable = false;
 
@@ -24,6 +25,7 @@
     _details(){return this.details;}
     _totalStealCards(){return this.totalStealCards;}
     _totalDrawCards(){return this.totalDrawCards;}
+    _totalGiftCards(){return this.totalGiftCards;}
     _isPlayDisabled(){return this.isPlayDisabled};
     _isSelectable(){return this.isSelectable;}
 
@@ -40,6 +42,12 @@
     SetDrawCards(nTotalDrawCards){
         this.totalDrawCards = nTotalDrawCards;
         if (nTotalDrawCards !== 0) this.isSelectable = true;
+    }
+
+    SetGiftCards(nTotalGiftCards)
+    {
+        this.totalGiftCards = nTotalGiftCards;
+        if (nTotalGiftCards !== 0) this.isSelectable = true;
     }
 
     DisableCardPlay()
@@ -126,6 +134,7 @@ class PlayerData{
         count, 
         totalStealCards = 0, 
         totalDrawCards = 0,
+        totalGiftCards = 0,
         isDisabledPlay = false)
     {
         for (let i = 0; i < count; i++)
@@ -134,6 +143,7 @@ class PlayerData{
             let objCardData = new CardData(strName, strDetails);
             objCardData.SetDrawCards(totalDrawCards);
             objCardData.SetStealCards(totalStealCards);
+            objCardData.SetGiftCards(totalGiftCards);
             if(isDisabledPlay) objCardData.DisableCardPlay();
 
             this.deckCardList.push(objCardData);
