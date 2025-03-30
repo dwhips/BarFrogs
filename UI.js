@@ -95,3 +95,22 @@ function CreatePlayerCardUI(objPlayersCardHand, iCard)
 
     return newCardDiv;
 }
+
+function RebuildPlayerList(elPlayerNameList)
+{
+    DeleteChildrenElements(elPlayerNameList);
+
+    for (iPlayer = 0; iPlayer < objCardManager.getTotalPlayers(); iPlayer++){
+        var elPlayerName = document.createElement("li");
+        elPlayerName.classList.add(strPlayerListNameElement);
+
+        let strNameText = objCardManager.getPlayerNameByIndex(iPlayer);
+        if (iPlayer === objCardManager.getCurrentPlayerIndex())
+        {
+            strNameText += " *";
+        }
+
+        elPlayerName.textContent = strNameText;
+        elPlayerNameList.appendChild(elPlayerName);
+    }
+}

@@ -268,26 +268,12 @@ function InitModalRedraw(blnCloseModal,
     return true;
 }
 
+//Effect Functions
 function RedrawPlayerNameListUI()
 {
-    DeleteChildrenElements(elPlayerNameList);
-
-    for (iPlayer = 0; iPlayer < objCardManager.getTotalPlayers(); iPlayer++){
-        var elPlayerName = document.createElement("li");
-        elPlayerName.classList.add(strPlayerListNameElement);
-
-        let strNameText = objCardManager.getPlayerNameByIndex(iPlayer);
-        if (iPlayer === objCardManager.getCurrentPlayerIndex())
-        {
-            strNameText += " *";
-        }
-
-        elPlayerName.textContent = strNameText;
-        elPlayerNameList.appendChild(elPlayerName);
-    }
+    RebuildPlayerList(elPlayerNameList);
 }
 
-//Effect Functions
 function RebuildPlayersHandAndSetCardEffects(objGameManager)
 {
     RebuildPlayersHand(objCardManager);
