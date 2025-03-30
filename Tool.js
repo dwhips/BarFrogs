@@ -7,7 +7,29 @@ function shuffleArray(array) {
 }
 
 function randomInt(max){
-    var test  = Math.floor(Math.random() * max);
-    console.log(test);
-    return test;
+    return Math.floor(Math.random() * max);
+}
+
+//UI Support
+function DeleteChildrenElements(parentElement)
+{
+    while (parentElement.firstChild) {
+        parentElement.firstChild.remove()
+    }
+}
+
+function GetClassElementByIndex(iTargetElement,
+    strSearchClassName)
+{
+    var elSearchingDiv = document.querySelectorAll("."+strSearchClassName);
+    if (elSearchingDiv.length === 0) throw new Error("Failed to find any elements for the class name: " + strSearchClassName);
+
+    for(iElement = 0; iElement < elSearchingDiv.length; iElement++)
+    {
+        if (iElement === iTargetElement)
+        {
+            return elSearchingDiv[iElement];
+        }
+    }
+    throw new Error("Could not find index " + iTargetElement + " a class div for class name: " + strSearchClassName + ". Only " + elSearchingDiv.length + "elements are available.");
 }

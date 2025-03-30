@@ -1,29 +1,16 @@
 //------------------Initializing variables and elements-----------------------------------
 var elButtonShuffle = document.getElementById("ShuffleDeckButton");
 
-var elListDeck = document.getElementById("DeckList");
+var elDeckList = document.getElementById("DeckList");
 var elTotalDeckCards = document.getElementById("totalDeckCards");
 var elPlayerNameList = document.getElementById("PlayerNameList");
-const strPlayerListNameElement = "PlayerListNameElement";
 
 var elPlayerBody = document.getElementById("PlayersBody");
-const strPlayerDivClass = "PlayerDiv";
-const strPlayerNameClass = "PlayerName";
-const strPlayerNumberClass = "PlayerNumber";
-const strPlayersCardContainerClass = "PlayersCardContainer";
-
-//Card html
-const strPlayerCardDivClass = "PlayerCardDiv";
-const strPlayerCardTitleClass = "PlayerCardTitle";
-const strPlayerCardDescriptionTextClass = "PlayerCardDescriptionText";
-
 
 var elAddPlayerButton = document.getElementById("AddPlayerButton");
 var elAddPlayerTextField = document.getElementById("AddPlayerTextField");
 
 //Modal Html
-const strStealModalPlayerName = "StealModalPlayerName";
-
 var elModalContainer = document.getElementById("ModalContainer");
 var elModalListContainer = document.getElementById("ModalListContainer");
 var elModalCloseButton = document.getElementById("ModalCloseButton");
@@ -53,7 +40,7 @@ InitUI(objCardManager);
 //=---------------------Element Listeners-----------------------------
 elButtonShuffle.addEventListener("click", function(){
     objCardManager.shuffleDeck();
-    RedrawCardsAndPlayersUI(false, true, objCardManager);
+    RebuildDeck(objCardManager, elDeckList);
 }, false);
 
 elAddPlayerButton.addEventListener("click", function () {
@@ -64,7 +51,8 @@ elAddPlayerButton.addEventListener("click", function () {
     //Where the game is actually being played. Don't need to rework how cards are dealt yet.
     AddPlayerUI(elAddPlayerTextField.value, objCardManager.getTotalPlayers() - 1);
 
-    RedrawCardsAndPlayersUI(true, true, objCardManager);
+    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RebuildDeck(objCardManager, elDeckList);
 
     RedrawPlayerNameListUI();
 
@@ -112,7 +100,8 @@ function InitUI(objCardManager)
         AddPlayerUI(listPlayers[iPlayer].getName(), iPlayer);
     }
 
-    RedrawCardsAndPlayersUI(true, true, objCardManager);
+    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RebuildDeck(objCardManager, elDeckList);
 
     RedrawPlayerNameListUI();
 }
@@ -170,12 +159,11 @@ function AddPlayerUI(strName, lngPlayerNumber)
     elPlayerDiv.appendChild(elNextPlayerButton);
 
     elNextPlayerButton.addEventListener('click', function(){
-        console.log("Ending turn for player[" + objCardManager.getCurrentPlayer() + "]");
+        console.log("Ending turn for player[" + objCardManager.getCurrentPlayerIndex() + "]");
         objCardManager.nextPlayer();
 
         RedrawStealModalUI("",0,true);
-
-        RedrawCardsAndPlayersUI(true, false, objCardManager);
+        RebuildPlayersHandAndSetCardEffects(objCardManager);
 
         RedrawPlayerNameListUI();
     }, false);
@@ -191,91 +179,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
     //This reliess on RedrawCards to add all of the card elements to this
 }
 
-function CreatePlayerCardUI(objPlayersCardHand, iCard)
-{
-    //Creating base card div
-    var newCardDiv = document.createElement("div");
-    newCardDiv.classList.add(strPlayerCardDivClass);
 
-    //Adding title text to the card
-    var cardText = document.createElement("p");
-    cardText.textContent = objPlayersCardHand[iCard]._name();
-    cardText.classList.add(strPlayerCardTitleClass);
-    newCardDiv.appendChild(cardText);
-
-    //Adding card description to the card
-    var cardDescription = document.createElement("p");
-    cardDescription.textContent = objPlayersCardHand[iCard]._details();
-    cardDescription.classList.add(strPlayerCardDescriptionTextClass);
-    newCardDiv.appendChild(cardDescription);
-
-    //Checking if the card can be selected
-    if (objPlayersCardHand[iCard]._isSelectable())
-    {
-       newCardDiv.style.outlineColor = 'red';
-    } else {
-        newCardDiv.style.outlineColor = 'gray';
-    }
-
-    return newCardDiv;
-}
-
-//Managing how cards are being drawn, this is a refresh UI function to redraw all card componenents for a player vs the deck\
-function RedrawCardsAndPlayersUI(redrawPlayerList,
-    redrawDeckList,
-    objCardManager
-)
-{
-    if (redrawDeckList)
-        {
-            DeleteChildrenElements(elListDeck);
-
-            //Redrawing deck cards
-            var listDeck = objCardManager.deckCardList;
-            for (var iDeckCard = 0; iDeckCard < listDeck.length; iDeckCard++)
-            {
-                //adding new list elements to deck
-                var newCardListItem = document.createElement("li");
-                newCardListItem.textContent = listDeck[iDeckCard]._name() + "-"+ listDeck[iDeckCard]._details();
-
-                elListDeck.appendChild(newCardListItem);
-            }
-
-            //Updating the remaining card deck count
-            elTotalDeckCards.innerText = listDeck.length;
-    }
-
-    if (redrawPlayerList){
-        const elPlayersCardContainer = document.querySelectorAll("." + strPlayersCardContainerClass);
-        var listPlayers = objCardManager.playerList
-
-        //Redrawing player hands
-        var iPlayer = 0;
-        elPlayersCardContainer.forEach(elPlayersCardDiv => {
-            var elPlayersDiv = GetPlayerDivElementByNumber(iPlayer);
-
-            if (iPlayer === objCardManager.getCurrentPlayer())
-            {
-                //Redrawing hand for current player
-                DeleteChildrenElements(elPlayersCardDiv);
-
-                var listPlayerCards = listPlayers[iPlayer].getPlayersHand();
-                for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
-                    let objPlayerCardDiv = CreatePlayerCardUI(listPlayerCards, iPlayersCard);
-                    elPlayersCardDiv.appendChild(objPlayerCardDiv);
-                    AddCardClickEvent(objPlayerCardDiv, listPlayers[iPlayer], iPlayersCard);
-                }
-
-                //Making sure player div is visible
-                elPlayersDiv.style.display = "block";
-            }else{
-                //Hiding divs for the other players
-                elPlayersDiv.style.display = "none";
-            }
-            iPlayer++;
-        });
-    }
-}
 
 function RedrawStealModalUI(strName,
     iCurrentPlayer,
@@ -314,13 +218,13 @@ function AddStealPlayerElement(strName){
         let iVictimPlayer = objCardManager.findPlayerByName(strVictimPlayersName);
 
         //At the time this name is clicked, we need to find out who the player is.
-        let iThiefPlayer = objCardManager.getCurrentPlayer();
+        let iThiefPlayer = objCardManager.getCurrentPlayerIndex();
 
         console.log(iThiefPlayer + " is stealing from " + strVictimPlayersName + ": " + iVictimPlayer);
 
-        objCardManager.stealCard(iThiefPlayer, iVictimPlayer);
-        //We really need a state machine
-        RedrawCardsAndPlayersUI(true, false, objCardManager);
+        objCardManager.moveCard(iThiefPlayer, iVictimPlayer);
+
+        RebuildPlayersHandAndSetCardEffects(objCardManager);
         RedrawStealModalUI("", 0, true);
     }, false);
 
@@ -343,7 +247,6 @@ function RedrawModalCards(iCurrentPlayer,
         var elCard = document.createElement("p");
         elCard.textContent = listPlayerCards[iCard]._name();
         console.log("Building card gifting list. Adding: " + listPlayerCards[iCard]._name());
-        // elCard.classList.add(strPlayerNameClass);
         elModalListContainer.appendChild(elCard);
     }
 }
@@ -374,7 +277,7 @@ function RedrawPlayerNameListUI()
         elPlayerName.classList.add(strPlayerListNameElement);
 
         let strNameText = objCardManager.getPlayerNameByIndex(iPlayer);
-        if (iPlayer === objCardManager.getCurrentPlayer())
+        if (iPlayer === objCardManager.getCurrentPlayerIndex())
         {
             strNameText += " *";
         }
@@ -385,8 +288,27 @@ function RedrawPlayerNameListUI()
 }
 
 //Effect Functions
-function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
+function RebuildPlayersHandAndSetCardEffects(objGameManager)
 {
+    RebuildPlayersHand(objCardManager);
+    
+    var listPlayerCards = objCardManager.playerList[objCardManager.getCurrentPlayerIndex()].getPlayersHand();
+    for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
+        // let objPlayerCardDiv = CreatePlayerCardUI(listPlayerCards, iPlayersCard);
+        // elPlayersCardDiv.appendChild(objPlayerCardDiv);
+
+        var objPlayerCardDiv = GetClassElementByIndex(iPlayersCard, strPlayerCardDivClass);
+        AddCardClickEvent(objGameManager,
+            objPlayerCardDiv,
+            iPlayersCard);
+        //TODO how to get cards events triggered/set.......
+    }
+}
+
+function AddCardClickEvent(objGameManager, objCardDivElement, iCard)
+{
+    var objPlayer = objGameManager.getCurrentPlayerObj()
+
     //Getting card data from the player obj
     let objCardData = objPlayer.getPlayersHand()[iCard];
 
@@ -395,7 +317,7 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
 
     objCardDivElement.addEventListener('click', function()
     {
-        let iCurrentPlayer = objCardManager.getCurrentPlayer();
+        let iCurrentPlayer = objCardManager.getCurrentPlayerIndex();
         let strCurrentName = objCardManager.getPlayerNameByIndex(iCurrentPlayer);
 
         if (objCardData._totalDrawCards() > 0)
@@ -428,22 +350,15 @@ function AddCardClickEvent(objCardDivElement, objPlayer, iCard)
         //Moving card from hand to table
         objPlayer.playiCard(iCard);
 
-        RedrawCardsAndPlayersUI(true, false, objCardManager);
+        RebuildPlayersHandAndSetCardEffects(objCardManager);
     }, false);
 }
 
-function DrawCard(iPlayerNumber) {
+function DrawCard(iPlayerNumber) {DrawCard
     //Draws a card for a player
     objCardManager.drawCard(iPlayerNumber);
-    RedrawCardsAndPlayersUI(true, true, objCardManager);
-}
-
-//Generic functions
-function DeleteChildrenElements(parentElement)
-{
-    while (parentElement.firstChild) {
-        parentElement.firstChild.remove()
-    }
+    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RebuildDeck(objCardManager, elDeckList);
 }
 
 function ToggleElementVisibility(objHtmlElement, objButtonElement, strDisplayShow) {
@@ -456,16 +371,3 @@ function ToggleElementVisibility(objHtmlElement, objButtonElement, strDisplaySho
     }
 }
 
-function GetPlayerDivElementByNumber(iGetPlayer)
-{
-    var elPlayerDivs = document.querySelectorAll("."+strPlayerDivClass);
-
-    for(iPlayer = 0; iPlayer < elPlayerDivs.length; iPlayer++)
-    {
-        if (iPlayer === iGetPlayer)
-        {
-            return elPlayerDivs[iPlayer];
-        }
-    }
-    throw new Error("Could not find a player div for player: " + iGetPlayer + ". Only " + elPlayerDivs.length + "Players are available.");
-}

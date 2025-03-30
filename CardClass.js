@@ -123,11 +123,11 @@ class PlayerData{
     }
     
     //Player Management
-    
-    getCurrentPlayer()
+    getCurrentPlayerIndex(){return this.iCurrentPlayer;}
+
+    getCurrentPlayerObj()
     {
-        console.log("Getting current player: " + this.iCurrentPlayer);
-        return this.iCurrentPlayer;
+        return this.playerList[this.getCurrentPlayerIndex()];
     }
     
     getTotalPlayers(){
@@ -163,7 +163,6 @@ class PlayerData{
     {
         for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
             if (this.playerList[iPlayer].name === strName){
-                // console.log("Found [" + strName + ": " + iPlayer + "] in findPlayerByName");
                 return iPlayer;
             }
         }
@@ -180,10 +179,9 @@ class PlayerData{
         totalDrawCards = 0,
         totalGiftCards = 0,
         isDisabledPlay = false)
+    {
+        for (let i = 0; i < count; i++)
         {
-            for (let i = 0; i < count; i++)
-                {
-                    // console.log("I am adding a card" + strName + ": #" + count)
             let objCardData = new CardData(strName, strDetails);
             objCardData.SetDrawCards(totalDrawCards);
             objCardData.SetStealCards(totalStealCards);
@@ -205,7 +203,7 @@ class PlayerData{
     drawCard(iPlayer){
         if (iPlayer == null)
         {
-            iPlayer = this.getCurrentPlayer();
+            iPlayer = this.getCurrentPlayerIndex();
         }
 
         if (this.deckCardList.length == 0)
@@ -218,7 +216,7 @@ class PlayerData{
         console.log("/////////Drawing card "+ objCard.name +" for player : " + iPlayer);
     }
 
-    stealCard(iPlayerThief, iPlayerVictim){
+    moveCard(iPlayerThief, iPlayerVictim){
         //Getting a random card from victim
         if (this.playerList[iPlayerVictim].playersHand.length === 0) {
             throw new Error("Cannot steal from target player [" + iPlayerVictim + "] who doesnt have any more cards" );
@@ -241,7 +239,6 @@ class PlayerData{
     initialDeal()
     {
         var totalCardsToDeal = this.playerList.length * this.playerStartHandCount;
-        console.log("Total cards to deal: " + totalCardsToDeal);
 
         if (totalCardsToDeal > this.deckCardList.length) throw new Error("Trying to draw " + totalCardsToDeal + " from " + this.deckCardList.length + " cards.");
 
