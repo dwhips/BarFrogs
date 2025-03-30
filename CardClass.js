@@ -121,54 +121,17 @@ class PlayerData{
         this.playerStartHandCount = lngPlayerStartHand;
         // this.startGame(); //Need to populate cards first
     }
-
-    addPlayer(strPlayerName){
-        if (strPlayerName == "") throw new Error("Adding a new player name cannot be empty");
-        // TODO should check if the name is already used 
-
-        this.playerList.push(new PlayerData(strPlayerName))
-    }
-
-    addNewCard(strName, 
-        strDetails, 
-        count, 
-        totalStealCards = 0, 
-        totalDrawCards = 0,
-        totalGiftCards = 0,
-        isDisabledPlay = false)
-    {
-        for (let i = 0; i < count; i++)
-        {
-            // console.log("I am adding a card" + strName + ": #" + count)
-            let objCardData = new CardData(strName, strDetails);
-            objCardData.SetDrawCards(totalDrawCards);
-            objCardData.SetStealCards(totalStealCards);
-            objCardData.SetGiftCards(totalGiftCards);
-            if(isDisabledPlay) objCardData.DisableCardPlay();
-
-            this.deckCardList.push(objCardData);
-        }
-    }
-
-    getCardFromDeck(iCard){
-        return this.deckCardList[iCard];
-    }
-
+    
+    //Player Management
+    
     getCurrentPlayer()
     {
         console.log("Getting current player: " + this.iCurrentPlayer);
         return this.iCurrentPlayer;
     }
-
-    findPlayerByName(strName)
-    {
-        for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
-            if (this.playerList[iPlayer].name === strName){
-                // console.log("Found [" + strName + ": " + iPlayer + "] in findPlayerByName");
-                return iPlayer;
-            }
-        }
-        throw new Error("Failed to find player [" + strName + "] in the player list");
+    
+    getTotalPlayers(){
+        return this.playerList.length;
     }
 
     getPlayerNameByIndex(iFindPlayer)
@@ -180,13 +143,63 @@ class PlayerData{
         }
         throw new Error("Failed to find player [" + iFindPlayer + "] in the player list. List size: " + this.playerList.length);
     }
+    
+    addPlayer(strPlayerName){
+        if (strPlayerName == "") throw new Error("Adding a new player name cannot be empty");
+        if(this.findPlayerByName(strPlayerName, true) !== -1) throw new Error("Name is already taken");
+
+        this.playerList.push(new PlayerData(strPlayerName))
+    }
+
+    nextPlayer(){
+        this.iCurrentPlayer++;
+        if (this.iCurrentPlayer >= this.getTotalPlayers())
+        {
+            this.iCurrentPlayer = 0;
+        }
+    }
+
+    findPlayerByName(strName, blnAllowMissing = false)
+    {
+        for (let iPlayer = 0; iPlayer < this.playerList.length; iPlayer++) {
+            if (this.playerList[iPlayer].name === strName){
+                // console.log("Found [" + strName + ": " + iPlayer + "] in findPlayerByName");
+                return iPlayer;
+            }
+        }
+        
+        if (blnAllowMissing) return -1;
+        throw new Error("Failed to find player [" + strName + "] in the player list");
+    }
+    
+    //Card Management
+    addNewCard(strName, 
+        strDetails, 
+        count, 
+        totalStealCards = 0, 
+        totalDrawCards = 0,
+        totalGiftCards = 0,
+        isDisabledPlay = false)
+        {
+            for (let i = 0; i < count; i++)
+                {
+                    // console.log("I am adding a card" + strName + ": #" + count)
+            let objCardData = new CardData(strName, strDetails);
+            objCardData.SetDrawCards(totalDrawCards);
+            objCardData.SetStealCards(totalStealCards);
+            objCardData.SetGiftCards(totalGiftCards);
+            if(isDisabledPlay) objCardData.DisableCardPlay();
+            
+            this.deckCardList.push(objCardData);
+        }
+    }
 
     shuffleDeck(){
         shuffleArray(this.deckCardList);
     }
-
-    getTotalPlayers(){
-        return this.playerList.length;
+    
+    getCardFromDeck(iCard){
+        return this.deckCardList[iCard];
     }
 
     drawCard(iPlayer){
@@ -215,6 +228,7 @@ class PlayerData{
         this.playerList[iPlayerThief].addCardToHand(objStolenCard);
     }
 
+    //Game Manager
     startGame(){
         //intial setup
         this.iCurrentPlayer = 0;
@@ -222,14 +236,6 @@ class PlayerData{
 
         //Dealing cards to players
         this.initialDeal();
-    }
-
-    nextPlayer(){
-        this.iCurrentPlayer++;
-        if (this.iCurrentPlayer >= this.getTotalPlayers())
-        {
-            this.iCurrentPlayer = 0;
-        }
     }
 
     initialDeal()
@@ -250,15 +256,3 @@ class PlayerData{
  }
   
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i >= 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-function randomInt(max){
-    var test  = Math.floor(Math.random() * max);
-    console.log(test);
-    return test;
-}
