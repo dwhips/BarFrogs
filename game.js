@@ -51,7 +51,7 @@ elAddPlayerButton.addEventListener("click", function () {
     //Where the game is actually being played. Don't need to rework how cards are dealt yet.
     AddPlayerUI(elAddPlayerTextField.value, objCardManager.getTotalPlayers() - 1);
 
-    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RedrawPlayersHandAndSetCardEffects(objCardManager);
     RebuildDeck(objCardManager, elDeckList);
 
     RedrawPlayerNameListUI();
@@ -73,7 +73,8 @@ function GenerateCards(objCards)
     objCards.addNewCard("Curse", "Place the curse card in front of any player. Double any drinks they take for the rest of the game.", 2)
 
     // -- Protection cards
-    objCards.addNewCard("Protect", "Play this card to stop any drinking effect.", 5);
+    //TODO protection count will last a number of turns
+    objCards.addNewCard("Protect", "Play this card to stop any drinking effect for one turn", 5,0,0,0,1);
 
     // -- Drawing Cards
     objCards.addNewCard("Jumpy Frog", "Draw 2 Cards", 5, 0, 2);
@@ -85,10 +86,9 @@ function GenerateCards(objCards)
 
     objCards.addNewCard("Pious Frog", "Choose any card in your hand and give it to a player of your choice", 4, 0, 0, 1);
 
-
     // -- End Game Cards
-    objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1, 0, 0, 0, true);
-    objCards.addNewCard("Lucky Frog", "You win if you have this card at the end of the game.", 1, 0, 0, 0, true);
+    objCards.addNewCard("Blackout", "You lose if you have this card at the end of the game.", 1, 0, 0, 0,0, true);
+    objCards.addNewCard("Lucky Frog", "You win if you have this card at the end of the game.", 1, 0, 0, 0,0, true);
 }
 
 //Adds buttons, cards, etc for each player and stores them in the element list
@@ -100,7 +100,7 @@ function InitUI(objCardManager)
         AddPlayerUI(listPlayers[iPlayer].getName(), iPlayer);
     }
 
-    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RedrawPlayersHandAndSetCardEffects(objCardManager);
     RebuildDeck(objCardManager, elDeckList);
 
     RedrawPlayerNameListUI();
@@ -163,7 +163,7 @@ function AddPlayerUI(strName, lngPlayerNumber)
         objCardManager.nextPlayer();
 
         RedrawStealModalUI("",0,true);
-        RebuildPlayersHandAndSetCardEffects(objCardManager);
+        RedrawPlayersHandAndSetCardEffects(objCardManager);
 
         RedrawPlayerNameListUI();
     }, false);
@@ -179,8 +179,6 @@ function AddPlayerUI(strName, lngPlayerNumber)
     //This reliess on RedrawCards to add all of the card elements to this
 }
 
-
-
 function RedrawStealModalUI(strName,
     iCurrentPlayer,
     blnCloseModal)
@@ -191,7 +189,6 @@ function RedrawStealModalUI(strName,
     elModalCurrentPlayerName.textContent = strName;
 
     //Hide the player who opened the steal list as an available target
-    // for (var iPlayerName = 0; iPlayerName < elModalListContainer.children.length; iPlayerName++)
     for (var iPlayerName = 0; iPlayerName < objCardManager.playerList.length; iPlayerName++)
     {
         //Add every player as an option to steal from, except for te current player
@@ -224,7 +221,7 @@ function AddStealPlayerElement(strName){
 
         objCardManager.moveCard(iThiefPlayer, iVictimPlayer);
 
-        RebuildPlayersHandAndSetCardEffects(objCardManager);
+        RedrawPlayersHandAndSetCardEffects(objCardManager);
         RedrawStealModalUI("", 0, true);
     }, false);
 
@@ -252,8 +249,7 @@ function RedrawModalCards(iCurrentPlayer,
 }
 
 function InitModalRedraw(blnCloseModal,
-    strModalTitle = ""
-)
+    strModalTitle = "")
 {
     DeleteChildrenElements(elModalListContainer);
 
@@ -274,20 +270,17 @@ function RedrawPlayerNameListUI()
     RebuildPlayerList(elPlayerNameList);
 }
 
-function RebuildPlayersHandAndSetCardEffects(objGameManager)
+function RedrawPlayersHandAndSetCardEffects(objGameManager)
 {
     RebuildPlayersHand(objCardManager);
     
     var listPlayerCards = objCardManager.playerList[objCardManager.getCurrentPlayerIndex()].getPlayersHand();
     for (var iPlayersCard = 0; iPlayersCard < listPlayerCards.length; iPlayersCard++){
-        // let objPlayerCardDiv = CreatePlayerCardUI(listPlayerCards, iPlayersCard);
-        // elPlayersCardDiv.appendChild(objPlayerCardDiv);
-
+        //Setting any click events that would trigger card actions
         var objPlayerCardDiv = GetClassElementByIndex(iPlayersCard, strPlayerCardDivClass);
         AddCardClickEvent(objGameManager,
             objPlayerCardDiv,
             iPlayersCard);
-        //TODO how to get cards events triggered/set.......
     }
 }
 
@@ -308,7 +301,7 @@ function AddCardClickEvent(objGameManager, objCardDivElement, iCard)
 
         if (objCardData._totalDrawCards() > 0)
         {
-            //Triggering draw effect
+            //Triggering draw card effect
             for(let i = 0; i < objCardData._totalDrawCards(); i++)
             {
                 DrawCard(iCurrentPlayer);
@@ -336,14 +329,14 @@ function AddCardClickEvent(objGameManager, objCardDivElement, iCard)
         //Moving card from hand to table
         objPlayer.playiCard(iCard);
 
-        RebuildPlayersHandAndSetCardEffects(objCardManager);
+        RedrawPlayersHandAndSetCardEffects(objCardManager);
     }, false);
 }
 
-function DrawCard(iPlayerNumber) {DrawCard
+function DrawCard(iPlayerNumber) {
     //Draws a card for a player
     objCardManager.drawCard(iPlayerNumber);
-    RebuildPlayersHandAndSetCardEffects(objCardManager);
+    RedrawPlayersHandAndSetCardEffects(objCardManager);
     RebuildDeck(objCardManager, elDeckList);
 }
 
@@ -356,4 +349,3 @@ function ToggleElementVisibility(objHtmlElement, objButtonElement, strDisplaySho
         objButtonElement.textContent = "Show";
     }
 }
-

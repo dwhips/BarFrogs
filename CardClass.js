@@ -10,6 +10,7 @@
     totalStealCards = 0;
     totalDrawCards = 0;
     totalGiftCards = 0;
+    totalProtectTurns = 0;
     isPlayDisabled = false;
     isSelectable = false;
 
@@ -26,6 +27,7 @@
     _totalStealCards(){return this.totalStealCards;}
     _totalDrawCards(){return this.totalDrawCards;}
     _totalGiftCards(){return this.totalGiftCards;}
+    _totalProtectTurns(){return this.totalProtectTurns;}
     _isPlayDisabled(){return this.isPlayDisabled};
     _isSelectable(){return this.isSelectable;}
 
@@ -48,6 +50,11 @@
     {
         this.totalGiftCards = nTotalGiftCards;
         if (nTotalGiftCards !== 0) this.isSelectable = true;
+    }
+
+    SetProtectTurns(nTotalTurns){
+        this.totalProtectTurns = nTotalTurns;
+        if (nTotalTurns !== 0) this.isSelectable = true;
     }
 
     DisableCardPlay()
@@ -178,6 +185,7 @@ class PlayerData{
         totalStealCards = 0, 
         totalDrawCards = 0,
         totalGiftCards = 0,
+        totalProtectTurns = 0,
         isDisabledPlay = false)
     {
         for (let i = 0; i < count; i++)
@@ -186,6 +194,7 @@ class PlayerData{
             objCardData.SetDrawCards(totalDrawCards);
             objCardData.SetStealCards(totalStealCards);
             objCardData.SetGiftCards(totalGiftCards);
+            objCardData.SetProtectTurns(totalProtectTurns);
             if(isDisabledPlay) objCardData.DisableCardPlay();
             
             this.deckCardList.push(objCardData);
